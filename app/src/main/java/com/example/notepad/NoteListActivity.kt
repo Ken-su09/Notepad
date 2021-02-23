@@ -15,6 +15,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
+    //region ========================================== Val or Var ==========================================
+
     private lateinit var listOfNotes: MutableList<Note>
     private lateinit var adapter: RecyclerViewNoteAdapter
 
@@ -38,6 +40,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
             }
             false
         }
+
+    //endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

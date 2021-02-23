@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class NoteDetailActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private var note: Note? = null
     private var noteId = 0
+    private var isFavorite = 0
 
     private var noteDetailActivityTitle: AppCompatEditText? = null
     private var noteDetailActivityContent: AppCompatEditText? = null
@@ -28,6 +30,35 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private var noteDao = App.database.noteDao()
     private var listOfNotes: MutableList<Note> = noteDao.getAllNotes()
+
+    private var navAddToFavoritesItem: MenuItem? = null
+    private var navRemoveFromFavoritesItem: MenuItem? = null
+    private var bottomNavigationView: BottomNavigationView? = null
+
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.note_detail_bottom_nav_view_menu_share -> {
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.note_detail_bottom_nav_view_menu_add_to_favorites -> {
+                    addNoteToFavorites()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.note_detail_bottom_nav_view_menu_remove_from_favorites -> {
+                    removeNoteFromFavorites()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.note_detail_bottom_nav_view_menu_trash -> {
+                    saveConfirmDeleteNoteDialog()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.note_detail_bottom_nav_view_menu_print -> {
+                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        }
 
     //endregion
 
@@ -60,6 +91,14 @@ class NoteDetailActivity : AppCompatActivity() {
             noteDetailActivityContent!!.setText(note?.content)
         }
 
+        bottomNavigationView =
+            findViewById<BottomNavigationView>(R.id.activity_note_detail_bottom_nav_view)
+        bottomNavigationView!!.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        val menu = bottomNavigationView!!.menu
+        navAddToFavoritesItem =
+            menu.findItem(R.id.note_detail_bottom_nav_view_menu_add_to_favorites)
+        navRemoveFromFavoritesItem =
+            menu.findItem(R.id.note_detail_bottom_nav_view_menu_remove_from_favorites)
 
         ArrayAdapter.createFromResource(
             this,
@@ -80,11 +119,12 @@ class NoteDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.note_detail_toolbar_menu_undo -> {
+            }
+            R.id.note_detail_toolbar_menu_redo -> {
+            }
             R.id.note_detail_toolbar_menu_validate -> {
                 saveNote()
-            }
-            R.id.note_detail_toolbar_menu_delete -> {
-                saveConfirmDeleteNoteDialog()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -95,6 +135,18 @@ class NoteDetailActivity : AppCompatActivity() {
     //region =========================================== Functions ==========================================
 
     private fun saveNote() {
+        if (noteDetailActivityTitle!!.text.toString().isEmpty()) {
+            if (noteDetailActivityContent!!.text.toString().length > 15) {
+                noteDetailActivityTitle!!.setText(
+                    noteDetailActivityContent!!.text.toString().take(15) + "..."
+                )
+            } else {
+                noteDetailActivityTitle!!.setText(
+                    noteDetailActivityContent!!.text.toString().take(15)
+                )
+            }
+        }
+
         if (note != null) {
             note!!.title = noteDetailActivityTitle!!.text.toString()
             note!!.content = noteDetailActivityContent!!.text.toString()
@@ -103,7 +155,10 @@ class NoteDetailActivity : AppCompatActivity() {
             note = Note(
                 listOfNotes.size + 1,
                 noteDetailActivityTitle!!.text.toString(),
-                noteDetailActivityContent!!.text.toString()
+                noteDetailActivityContent!!.text.toString(),
+                "",
+                java.util.Calendar.getInstance().toString(),
+                isFavorite
             )
             noteDao.insertNote(note!!)
         }
@@ -130,6 +185,20 @@ class NoteDetailActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun addNoteToFavorites() {
+        navAddToFavoritesItem!!.isVisible = false
+        navRemoveFromFavoritesItem!!.isVisible = true
+        navRemoveFromFavoritesItem!!.isChecked = true
+        bottomNavigationView!!.menu.getItem(2).isChecked = true
+    }
+
+    private fun removeNoteFromFavorites() {
+        navRemoveFromFavoritesItem!!.isVisible = false
+        navRemoveFromFavoritesItem!!.isChecked = false
+        navAddToFavoritesItem!!.isVisible = true
+        bottomNavigationView!!.menu.getItem(2).isChecked = false
     }
 
     //endregion

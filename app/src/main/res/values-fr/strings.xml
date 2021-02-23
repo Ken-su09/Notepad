@@ -36,8 +36,15 @@
     <!-- Note List Bottom Nav View Menu -->
     <string name="note_list_bottom_nav_view_menu_notes">Notes</string>
     <string name="note_list_bottom_nav_view_menu_favorites">Favoris</string>
-    <string name="note_list_bottom_nav_view_menu_trash">Corbeilles</string>
+    <string name="note_list_bottom_nav_view_menu_trash">Corbeille</string>
     <string name="note_list_bottom_nav_view_menu_categories">Catégories</string>
+
+    <!-- Note Detail Bottom Nav View Menu -->
+    <string name="note_detail_bottom_nav_view_menu_share">Partager</string>
+    <string name="note_detail_bottom_nav_view_menu_add_to_favorites">Favoris</string>
+    <string name="note_detail_bottom_nav_view_menu_remove_from_favorites">Retirer des favoris</string>
+    <string name="note_detail_bottom_nav_view_menu_trash">Supprimer</string>
+    <string name="note_detail_bottom_nav_view_menu_print">Imprimer</string>
 
     <string-array name="categories_array">
         <item>Voyage</item>

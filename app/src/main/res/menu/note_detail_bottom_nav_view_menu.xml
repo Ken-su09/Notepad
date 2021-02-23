@@ -2,23 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/activity_note_list_bottom_nav_view_notes"
-        android:icon="@drawable/ic_notes"
-        android:title="@string/note_list_bottom_nav_view_menu_notes"
+        android:id="@+id/note_detail_bottom_nav_view_menu_share"
+        android:icon="@drawable/ic_share"
+        android:title="@string/note_detail_bottom_nav_view_menu_share"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/activity_note_list_bottom_nav_view_favorites"
+        android:id="@+id/note_detail_bottom_nav_view_menu_add_to_favorites"
         android:icon="@drawable/ic_star"
-        android:title="@string/note_list_bottom_nav_view_menu_favorites"
+        android:title="@string/note_detail_bottom_nav_view_menu_add_to_favorites"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/activity_note_list_bottom_nav_view_trash"
+        android:id="@+id/note_detail_bottom_nav_view_menu_remove_from_favorites"
+        android:icon="@drawable/ic_full_star"
+        android:title="@string/note_detail_bottom_nav_view_menu_remove_from_favorites"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/note_detail_bottom_nav_view_menu_trash"
         android:icon="@drawable/ic_delete"
-        android:title="@string/note_list_bottom_nav_view_menu_trash"
+        android:title="@string/note_detail_bottom_nav_view_menu_trash"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/activity_note_list_bottom_nav_view_categories"
-        android:icon="@drawable/ic_categorie"
-        android:title="@string/note_list_bottom_nav_view_menu_categories"
+        android:id="@+id/note_detail_bottom_nav_view_menu_print"
+        android:icon="@drawable/ic_printer"
+        android:title="@string/note_detail_bottom_nav_view_menu_print"
         app:showAsAction="ifRoom" />
 </menu>
