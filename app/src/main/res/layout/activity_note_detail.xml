@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NoteDetailActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/activity_note_detail_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/activity_note_detail_title"
+        style="@style/CustomEditTextTitleStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/activity_note_detail_toolbar"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:ellipsize="end"
+        android:hint="@string/activity_note_detail_title_hint"
+        android:maxLines="1"
+        android:padding="10dp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/activity_note_detail_spinner_image"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/activity_note_detail_title"
+        app:srcCompat="@drawable/ic_bookmark"
+        tools:ignore="VectorDrawableCompat" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/activity_note_detail_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_note_detail_title"
+        android:layout_toEndOf="@+id/activity_note_detail_spinner_image"
+        android:layout_toRightOf="@+id/activity_note_detail_spinner_image" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_note_detail_title"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:textSize="12sp"
+        tools:text="09:59 10/02/2021" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/activity_note_detail_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/activity_note_detail_spinner"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:gravity="top"
+        android:hint="@string/activity_note_detail_content_hint"
+        android:padding="5dp" />
+
+</RelativeLayout>

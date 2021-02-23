@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Notepad</string>
+
+    <!-- Note Detail Activity -->
+    <string name="activity_note_detail_title_hint">Note\'s title</string>
+    <string name="activity_note_detail_content_hint">Note\'s content</string>
+    <string name="note_detail_material_builder_delete_note_title">Deleting a note</string>
+    <string name="note_detail_material_builder_delete_note_message">Are you sure you want to delete the note</string>
+    <string name="note_detail_material_builder_delete_note_positive_button">Delete</string>
+    <string name="note_detail_material_builder_delete_note_negative_button">Cancel</string>
+
+    <string name="note_detail_material_builder_back_on_pressed_title">Warning !</string>
+    <string name="note_detail_material_builder_back_on_pressed_message">You may lose the changes, do you really want to continue?</string>
+    <string name="note_detail_material_builder_back_on_pressed_positive_button">Confirm</string>
+    <string name="note_detail_material_builder_back_on_pressed_negative_button">Cancel</string>
+
+    <string name="note_detail_action_delete">Delete</string>
+    <string name="note_detail_action_save">Save</string>
+    <string name="note_detail_action_undo">Undo</string>
+    <string name="note_detail_action_redo">Redo</string>
+    <string name="note_detail_nb_character">character</string>
+    <string name="note_detail_nb_characters">characters</string>
+    <string name="note_detail_is_empty">Title should not be empty</string>
+
+    <!-- Note Detail Toolbar Menu -->
+    <string name="note_detail_toolbar_menu_validate">Validate</string>
+    <string name="note_detail_toolbar_menu_delete">Delete</string>
+
+
+    <!-- Note List Toolbar Menu -->
+    <string name="note_list_toolbar_menu_search">Search</string>
+    <string name="note_list_toolbar_menu_sort_by">Sort by :</string>
+    <string name="note_list_toolbar_menu_sort_by_date">Date</string>
+    <string name="note_list_toolbar_menu_sort_by_alphabetical">Alphabetical</string>
+    <string name="note_list_toolbar_sort_by_favorite">Favorite</string>
+
+    <!-- Note List Bottom Nav View Menu -->
+    <string name="note_list_bottom_nav_view_menu_notes">Notes</string>
+    <string name="note_list_bottom_nav_view_menu_favorites">Favorites</string>
+    <string name="note_list_bottom_nav_view_menu_trash">Trash</string>
+    <string name="note_list_bottom_nav_view_menu_categories">Categories</string>
+
+    <string-array name="categories_array">
+        <item>Travel</item>
+        <item>Personal</item>
+        <item>Life</item>
+        <item>Work</item>
+    </string-array>
+
+</resources>
