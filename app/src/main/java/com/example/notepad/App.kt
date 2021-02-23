@@ -13,7 +13,7 @@ class App : Application() {
         super.onCreate()
         database = Room.databaseBuilder(this, AppDatabase::class.java, "note")
             .allowMainThreadQueries()
+            .addMigrations(MIGRATION_1_2)
             .build()
-        //            .addMigrations(MIGRATION_1_2)
     }
 }

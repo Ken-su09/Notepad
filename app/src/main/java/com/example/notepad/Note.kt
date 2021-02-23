@@ -10,5 +10,6 @@ data class Note(
     var title: String = "",
     var content: String = "",
     var filename: String = "",
-    var date: String = ""
+    var date: String = "",
+    var isFavorite: Int
 )

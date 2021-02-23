@@ -21,6 +21,13 @@ interface NoteDAO {
 
     /**
      * Usage:
+     * dao.getNoteById(1)
+     */
+    @Query("SELECT * FROM note WHERE isFavorite == :isFavorite")
+    fun getFavoritesNotes(isFavorite: Int): MutableList<Note>
+
+    /**
+     * Usage:
      * dao.insertNote(note)
      */
     @Insert
