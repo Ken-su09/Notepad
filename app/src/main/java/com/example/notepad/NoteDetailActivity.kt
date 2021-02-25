@@ -3,12 +3,13 @@ package com.example.notepad
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -24,6 +25,7 @@ class NoteDetailActivity : AppCompatActivity() {
     private var note: Note? = null
     private var noteId = 0
     private var isFavorite = 0
+    private var isDeleted = 0
 
     private var noteDetailActivityTitle: AppCompatEditText? = null
     private var noteDetailActivityContent: AppCompatEditText? = null
@@ -32,13 +34,14 @@ class NoteDetailActivity : AppCompatActivity() {
     private var noteDao = App.database.noteDao()
     private var listOfNotes: MutableList<Note> = noteDao.getAllNotes()
 
-    private var bottomNavigationView: BottomNavigationView? = null
+    private var noteDetailBottomNavigationView: BottomNavigationView? = null
+    private var noteDetailDeletedBottomNavigationView: BottomNavigationView? = null
 
-    private val mOnNavigationItemSelectedListener =
+    private val mOnNavigationItemSelectedListenerNoteDetail =
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.note_detail_bottom_nav_view_menu_share -> {
-                    return@OnNavigationItemSelectedListener true
+                    shareNote(note!!)
                 }
                 R.id.note_detail_bottom_nav_view_menu_favorites -> {
                     if (isFavorite == 1) {
@@ -46,20 +49,30 @@ class NoteDetailActivity : AppCompatActivity() {
                         menuItem.setTitle(R.string.note_detail_bottom_nav_view_menu_add_to_favorites)
                         isFavorite = 0
                         menuItem.isChecked = false
-//                        menuItem.
+                        noteDetailBottomNavigationView!!.menu.setGroupCheckable(0, false, true)
                     } else {
                         menuItem.setIcon(R.drawable.ic_full_star)
-                        menuItem.setTitle(R.string.note_detail_bottom_nav_view_menu_remove_from_favorites)
                         isFavorite = 1
+                        noteDetailBottomNavigationView!!.menu.setGroupCheckable(0, true, true)
                     }
-                    return@OnNavigationItemSelectedListener true
                 }
                 R.id.note_detail_bottom_nav_view_menu_trash -> {
                     saveConfirmDeleteNoteDialog()
-                    return@OnNavigationItemSelectedListener true
                 }
                 R.id.note_detail_bottom_nav_view_menu_print -> {
-                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        }
+
+    private val mOnNavigationItemSelectedListenerNoteDetailDeleted =
+        BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.note_deleted_detail_bottom_nav_view_menu_delete -> {
+                    saveConfirmPermanentlyDeleteNoteDialog()
+                }
+                R.id.note_deleted_detail_bottom_nav_view_menu_restore -> {
+                    restoreNote()
                 }
             }
             false
@@ -82,7 +95,6 @@ class NoteDetailActivity : AppCompatActivity() {
 
         noteId = intent.getIntExtra(EXTRA_NOTE_ID, -1)
         note = noteDao.getNoteById(noteId)
-        isFavorite = note!!.isFavorite
 
         //region ======================================= FindViewById =======================================
 
@@ -95,12 +107,37 @@ class NoteDetailActivity : AppCompatActivity() {
         if (note != null) {
             noteDetailActivityTitle!!.setText(note?.title)
             noteDetailActivityContent!!.setText(note?.content)
+            isFavorite = note!!.isFavorite
         }
 
-        bottomNavigationView =
+        noteDetailBottomNavigationView =
             findViewById(R.id.activity_note_detail_bottom_nav_view)
-        bottomNavigationView!!.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        val menu = bottomNavigationView!!.menu
+        noteDetailBottomNavigationView!!.setOnNavigationItemSelectedListener(
+            mOnNavigationItemSelectedListenerNoteDetail
+        )
+        val menuItemFavorite =
+            noteDetailBottomNavigationView!!.menu.getItem(1)
+
+        noteDetailDeletedBottomNavigationView =
+            findViewById(R.id.activity_note_deleted_detail_bottom_nav_view)
+        noteDetailDeletedBottomNavigationView!!.setOnNavigationItemSelectedListener(
+            mOnNavigationItemSelectedListenerNoteDetailDeleted
+        )
+
+        if (note!!.isDeleted == 1) {
+            noteDetailBottomNavigationView!!.visibility = View.GONE
+            noteDetailDeletedBottomNavigationView!!.visibility = View.VISIBLE
+        }
+
+        if (isFavorite == 1) {
+            menuItemFavorite.setIcon(R.drawable.ic_full_star)
+            menuItemFavorite.isChecked = true
+        } else {
+            menuItemFavorite.setIcon(R.drawable.ic_star)
+            menuItemFavorite.setTitle(R.string.note_detail_bottom_nav_view_menu_add_to_favorites)
+            menuItemFavorite.isChecked = false
+            noteDetailBottomNavigationView!!.menu.setGroupCheckable(0, false, true)
+        }
 
         ArrayAdapter.createFromResource(
             this,
@@ -142,6 +179,7 @@ class NoteDetailActivity : AppCompatActivity() {
             note!!.title = noteDetailActivityTitle!!.text.toString()
             note!!.content = noteDetailActivityContent!!.text.toString()
             note!!.isFavorite = isFavorite
+            note!!.isDeleted = isDeleted
             noteDao.updateNote(note!!)
         } else {
             note = Note(
@@ -150,7 +188,7 @@ class NoteDetailActivity : AppCompatActivity() {
                 noteDetailActivityContent!!.text.toString(),
                 "",
                 java.util.Calendar.getInstance().toString(),
-                isFavorite
+                isFavorite, isDeleted
             )
             noteDao.insertNote(note!!)
         }
@@ -170,6 +208,21 @@ class NoteDetailActivity : AppCompatActivity() {
             .setTitle(getString(R.string.note_detail_material_builder_delete_note_title))
             .setMessage(getString(R.string.note_detail_material_builder_delete_note_message) + " \"${noteDetailActivityTitle!!.text}\" ?")
             .setPositiveButton(getString(R.string.note_detail_material_builder_delete_note_positive_button)) { _, _ ->
+                isDeleted = 1
+                saveNote()
+            }
+            .setNegativeButton(R.string.note_detail_material_builder_delete_note_negative_button) { dialog, _ ->
+                dialog.cancel()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun saveConfirmPermanentlyDeleteNoteDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.note_detail_material_builder_delete_note_title))
+            .setMessage(getString(R.string.note_detail_material_builder_delete_permanently_note_message) + " \"${noteDetailActivityTitle!!.text}\" ?")
+            .setPositiveButton(getString(R.string.note_detail_material_builder_delete_note_positive_button)) { _, _ ->
                 deleteNote()
             }
             .setNegativeButton(R.string.note_detail_material_builder_delete_note_negative_button) { dialog, _ ->
@@ -177,6 +230,20 @@ class NoteDetailActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun restoreNote() {
+        isDeleted = 0
+        saveNote()
+    }
+
+    private fun shareNote(note: Note) {
+        val message = "Title : ${note.title}, content : ${note.content}"
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.putExtra(Intent.EXTRA_TEXT, message)
+
+        startActivity(Intent.createChooser(share, "Title of the dialog the system will open"))
     }
 
     //endregion

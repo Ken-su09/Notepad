@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/note_deleted_detail_bottom_nav_view_menu_delete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/note_detail_bottom_nav_view_menu_trash"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/note_deleted_detail_bottom_nav_view_menu_restore"
+        android:icon="@drawable/ic_restore"
+        android:title="@string/note_detail_bottom_nav_view_menu_restore"
+        app:showAsAction="ifRoom" />
+</menu>

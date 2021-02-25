@@ -6,6 +6,7 @@
     <string name="activity_note_detail_content_hint">Note\'s content</string>
     <string name="note_detail_material_builder_delete_note_title">Deleting a note</string>
     <string name="note_detail_material_builder_delete_note_message">Are you sure you want to delete the note</string>
+    <string name="note_detail_material_builder_delete_permanently_note_message">Are you sure you want to delete the note permanently</string>
     <string name="note_detail_material_builder_delete_note_positive_button">Delete</string>
     <string name="note_detail_material_builder_delete_note_negative_button">Cancel</string>
 
@@ -43,9 +44,9 @@
     <!-- Note Detail Bottom Nav View Menu -->
     <string name="note_detail_bottom_nav_view_menu_share">Share</string>
     <string name="note_detail_bottom_nav_view_menu_add_to_favorites">Favorites</string>
-    <string name="note_detail_bottom_nav_view_menu_remove_from_favorites">Remove from favorites</string>
     <string name="note_detail_bottom_nav_view_menu_trash">Delete</string>
     <string name="note_detail_bottom_nav_view_menu_print">Print</string>
+    <string name="note_detail_bottom_nav_view_menu_restore">Restore</string>
 
     <string-array name="categories_array">
         <item>Travel</item>

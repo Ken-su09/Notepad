@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_below="@+id/activity_note_detail_toolbar"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:ellipsize="end"
         android:hint="@string/activity_note_detail_title_hint"
         android:inputType="text"
@@ -72,4 +72,14 @@
         android:background="?android:attr/windowBackground"
         app:itemBackground="@color/grey"
         app:menu="@menu/note_detail_bottom_nav_view_menu" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/activity_note_deleted_detail_bottom_nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        android:visibility="gone"
+        app:itemBackground="@color/grey"
+        app:menu="@menu/note_deleted_detail_bottom_nav_view_menu" />
 </RelativeLayout>
