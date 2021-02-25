@@ -23,6 +23,7 @@
         android:layout_marginLeft="20dp"
         android:ellipsize="end"
         android:hint="@string/activity_note_detail_title_hint"
+        android:inputType="text"
         android:maxLines="1"
         android:padding="10dp" />
 

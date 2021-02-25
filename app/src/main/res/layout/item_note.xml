@@ -31,6 +31,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:ellipsize="end"
+                android:maxLines="1"
                 tools:text="Hello" />
 
             <TextView

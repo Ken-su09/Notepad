@@ -1,5 +1,6 @@
 package com.example.notepad
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -92,7 +93,7 @@ class NoteDetailActivity : AppCompatActivity() {
         }
 
         bottomNavigationView =
-            findViewById<BottomNavigationView>(R.id.activity_note_detail_bottom_nav_view)
+            findViewById(R.id.activity_note_detail_bottom_nav_view)
         bottomNavigationView!!.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         val menu = bottomNavigationView!!.menu
         navAddToFavoritesItem =
@@ -134,18 +135,25 @@ class NoteDetailActivity : AppCompatActivity() {
 
     //region =========================================== Functions ==========================================
 
+    @SuppressLint("SetTextI18n")
     private fun saveNote() {
-        if (noteDetailActivityTitle!!.text.toString().isEmpty()) {
-            if (noteDetailActivityContent!!.text.toString().length > 15) {
-                noteDetailActivityTitle!!.setText(
-                    noteDetailActivityContent!!.text.toString().take(15) + "..."
-                )
-            } else {
-                noteDetailActivityTitle!!.setText(
-                    noteDetailActivityContent!!.text.toString().take(15)
-                )
-            }
-        }
+//        if (noteDetailActivityContent!!.text.toString().length > 25) {
+//            noteDetailActivityTitle!!.setText(
+//                noteDetailActivityTitle!!.text.toString().take(25) + "..."
+//            )
+//        }
+//
+//        if (noteDetailActivityTitle!!.text.toString().isEmpty()) {
+//            if (noteDetailActivityContent!!.text.toString().length > 25) {
+//                noteDetailActivityTitle!!.setText(
+//                    noteDetailActivityContent!!.text.toString().take(25) + "..."
+//                )
+//            } else {
+//                noteDetailActivityTitle!!.setText(
+//                    noteDetailActivityContent!!.text.toString().take(25)
+//                )
+//            }
+//        }
 
         if (note != null) {
             note!!.title = noteDetailActivityTitle!!.text.toString()
