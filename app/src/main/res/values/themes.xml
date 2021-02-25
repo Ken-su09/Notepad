@@ -16,7 +16,7 @@
 
     <style name="CustomEditTextTitleStyle">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">28sp</item>
         <item name="android:background">@color/white</item>
     </style>
 </resources>

@@ -10,7 +10,6 @@
         android:roundIcon="@drawable/ic_app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Notepad">
-        <activity android:name=".NoteListFavoritesActivity"></activity>
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
