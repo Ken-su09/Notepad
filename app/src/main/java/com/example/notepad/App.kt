@@ -14,6 +14,7 @@ class App : Application() {
         database = Room.databaseBuilder(this, AppDatabase::class.java, "note")
             .allowMainThreadQueries()
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .build()
     }
 }

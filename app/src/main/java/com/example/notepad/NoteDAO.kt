@@ -9,7 +9,7 @@ interface NoteDAO {
      * Usage:
      * dao.getAllNotes()
      */
-    @Query("SELECT * FROM note")
+    @Query("SELECT * FROM note WHERE isDeleted == 0")
     fun getAllNotes(): MutableList<Note>
 
     /**
@@ -23,8 +23,15 @@ interface NoteDAO {
      * Usage:
      * dao.getFavoritesNotes()
      */
-    @Query("SELECT * FROM note WHERE isFavorite == 1")
+    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0")
     fun getFavoritesNotes(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getDeletedNotes()
+     */
+    @Query("SELECT * FROM note WHERE isDeleted == 1")
+    fun getDeletedNotes(): MutableList<Note>
 
     /**
      * Usage:

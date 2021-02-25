@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Note::class], version = 2)
+@Database(entities = [Note::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDAO
 }
@@ -13,5 +13,11 @@ abstract class AppDatabase : RoomDatabase() {
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE `note` ADD isFavorite INT NOT NULL DEFAULT''")
+    }
+}
+
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `note` ADD isDeleted INT NOT NULL DEFAULT''")
     }
 }

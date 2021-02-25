@@ -11,5 +11,6 @@ data class Note(
     var content: String = "",
     var filename: String = "",
     var date: String = "",
-    var isFavorite: Int
+    var isFavorite: Int,
+    var isDeleted: Int = 0
 )
