@@ -7,15 +7,9 @@
         android:title="@string/note_detail_bottom_nav_view_menu_share"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/note_detail_bottom_nav_view_menu_add_to_favorites"
+        android:id="@+id/note_detail_bottom_nav_view_menu_favorites"
         android:icon="@drawable/ic_star"
         android:title="@string/note_detail_bottom_nav_view_menu_add_to_favorites"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/note_detail_bottom_nav_view_menu_remove_from_favorites"
-        android:icon="@drawable/ic_full_star"
-        android:title="@string/note_detail_bottom_nav_view_menu_remove_from_favorites"
-        android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/note_detail_bottom_nav_view_menu_trash"

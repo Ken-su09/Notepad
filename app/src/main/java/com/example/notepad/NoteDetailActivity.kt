@@ -32,8 +32,6 @@ class NoteDetailActivity : AppCompatActivity() {
     private var noteDao = App.database.noteDao()
     private var listOfNotes: MutableList<Note> = noteDao.getAllNotes()
 
-    private var navAddToFavoritesItem: MenuItem? = null
-    private var navRemoveFromFavoritesItem: MenuItem? = null
     private var bottomNavigationView: BottomNavigationView? = null
 
     private val mOnNavigationItemSelectedListener =
@@ -42,12 +40,18 @@ class NoteDetailActivity : AppCompatActivity() {
                 R.id.note_detail_bottom_nav_view_menu_share -> {
                     return@OnNavigationItemSelectedListener true
                 }
-                R.id.note_detail_bottom_nav_view_menu_add_to_favorites -> {
-                    addNoteToFavorites()
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.note_detail_bottom_nav_view_menu_remove_from_favorites -> {
-                    removeNoteFromFavorites()
+                R.id.note_detail_bottom_nav_view_menu_favorites -> {
+                    if (isFavorite == 1) {
+                        menuItem.setIcon(R.drawable.ic_star)
+                        menuItem.setTitle(R.string.note_detail_bottom_nav_view_menu_add_to_favorites)
+                        isFavorite = 0
+                        menuItem.isChecked = false
+//                        menuItem.
+                    } else {
+                        menuItem.setIcon(R.drawable.ic_full_star)
+                        menuItem.setTitle(R.string.note_detail_bottom_nav_view_menu_remove_from_favorites)
+                        isFavorite = 1
+                    }
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.note_detail_bottom_nav_view_menu_trash -> {
@@ -78,6 +82,7 @@ class NoteDetailActivity : AppCompatActivity() {
 
         noteId = intent.getIntExtra(EXTRA_NOTE_ID, -1)
         note = noteDao.getNoteById(noteId)
+        isFavorite = note!!.isFavorite
 
         //region ======================================= FindViewById =======================================
 
@@ -96,10 +101,6 @@ class NoteDetailActivity : AppCompatActivity() {
             findViewById(R.id.activity_note_detail_bottom_nav_view)
         bottomNavigationView!!.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         val menu = bottomNavigationView!!.menu
-        navAddToFavoritesItem =
-            menu.findItem(R.id.note_detail_bottom_nav_view_menu_add_to_favorites)
-        navRemoveFromFavoritesItem =
-            menu.findItem(R.id.note_detail_bottom_nav_view_menu_remove_from_favorites)
 
         ArrayAdapter.createFromResource(
             this,
@@ -137,27 +138,10 @@ class NoteDetailActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun saveNote() {
-//        if (noteDetailActivityContent!!.text.toString().length > 25) {
-//            noteDetailActivityTitle!!.setText(
-//                noteDetailActivityTitle!!.text.toString().take(25) + "..."
-//            )
-//        }
-//
-//        if (noteDetailActivityTitle!!.text.toString().isEmpty()) {
-//            if (noteDetailActivityContent!!.text.toString().length > 25) {
-//                noteDetailActivityTitle!!.setText(
-//                    noteDetailActivityContent!!.text.toString().take(25) + "..."
-//                )
-//            } else {
-//                noteDetailActivityTitle!!.setText(
-//                    noteDetailActivityContent!!.text.toString().take(25)
-//                )
-//            }
-//        }
-
         if (note != null) {
             note!!.title = noteDetailActivityTitle!!.text.toString()
             note!!.content = noteDetailActivityContent!!.text.toString()
+            note!!.isFavorite = isFavorite
             noteDao.updateNote(note!!)
         } else {
             note = Note(
@@ -193,20 +177,6 @@ class NoteDetailActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .show()
-    }
-
-    private fun addNoteToFavorites() {
-        navAddToFavoritesItem!!.isVisible = false
-        navRemoveFromFavoritesItem!!.isVisible = true
-        navRemoveFromFavoritesItem!!.isChecked = true
-        bottomNavigationView!!.menu.getItem(2).isChecked = true
-    }
-
-    private fun removeNoteFromFavorites() {
-        navRemoveFromFavoritesItem!!.isVisible = false
-        navRemoveFromFavoritesItem!!.isChecked = false
-        navAddToFavoritesItem!!.isVisible = true
-        bottomNavigationView!!.menu.getItem(2).isChecked = false
     }
 
     //endregion

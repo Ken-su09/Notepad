@@ -21,10 +21,10 @@ interface NoteDAO {
 
     /**
      * Usage:
-     * dao.getNoteById(1)
+     * dao.getFavoritesNotes()
      */
-    @Query("SELECT * FROM note WHERE isFavorite == :isFavorite")
-    fun getFavoritesNotes(isFavorite: Int): MutableList<Note>
+    @Query("SELECT * FROM note WHERE isFavorite == 1")
+    fun getFavoritesNotes(): MutableList<Note>
 
     /**
      * Usage:
