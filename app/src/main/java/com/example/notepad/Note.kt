@@ -5,12 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Note(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int,
     var title: String = "",
     var content: String = "",
     var filename: String = "",
     var date: String = "",
     var isFavorite: Int,
-    var isDeleted: Int = 0
+    var isDeleted: Int = 0,
+
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
 )
