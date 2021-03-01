@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">Notepad</string>
 
+    <!-- Note List Toolbar Menu -->
+    <string name="note_list_toolbar_menu_search">Rechercher</string>
+    <string name="note_list_toolbar_menu_sort_by">Trier par</string>
+    <string name="note_list_toolbar_menu_sort_by_date">Date</string>
+    <string name="note_list_toolbar_menu_sort_by_alphabetical">Ordre alphabétique</string>
+    <string name="note_list_toolbar_sort_by_favorite">Favoris</string>
+
+    <!-- Note List Bottom Nav View Menu -->
+    <string name="note_list_bottom_nav_view_menu_notes">Notes</string>
+    <string name="note_list_bottom_nav_view_menu_favorites">Favoris</string>
+    <string name="note_list_bottom_nav_view_menu_trash">Corbeille</string>
+    <string name="note_list_bottom_nav_view_menu_categories">Catégories</string>
+
+
     <!-- Note Detail Activity -->
     <string name="activity_note_detail_title_hint">Titre de la note</string>
     <string name="activity_note_detail_content_hint">Contenu de la note</string>
@@ -14,13 +28,6 @@
     <string name="note_detail_toolbar_menu_validate">Valider</string>
     <string name="note_detail_toolbar_menu_delete">Supprimer</string>
 
-    <!-- Note List Toolbar Menu -->
-    <string name="note_list_toolbar_menu_search">Rechercher</string>
-    <string name="note_list_toolbar_menu_sort_by">Trier par</string>
-    <string name="note_list_toolbar_menu_sort_by_date">Date</string>
-    <string name="note_list_toolbar_menu_sort_by_alphabetical">Ordre alphabétique</string>
-    <string name="note_list_toolbar_sort_by_favorite">Favoris</string>
-
     <string name="note_detail_material_builder_back_on_pressed_title">Attention !</string>
     <string name="note_detail_material_builder_back_on_pressed_message">Vous risquez de perdre les modifications, voulez-vous vraiment continuer ?</string>
     <string name="note_detail_material_builder_back_on_pressed_positive_button">Confirmer</string>
@@ -32,13 +39,7 @@
     <string name="note_detail_action_redo">Avancer</string>
     <string name="note_detail_nb_character">caractère</string>
     <string name="note_detail_nb_characters">caractères</string>
-    <string name="note_detail_is_empty">Le titre ne doit pas être vide</string>
-
-    <!-- Note List Bottom Nav View Menu -->
-    <string name="note_list_bottom_nav_view_menu_notes">Notes</string>
-    <string name="note_list_bottom_nav_view_menu_favorites">Favoris</string>
-    <string name="note_list_bottom_nav_view_menu_trash">Corbeille</string>
-    <string name="note_list_bottom_nav_view_menu_categories">Catégories</string>
+    <string name="note_detail_is_empty">Les deux champs ne doivent pas être vides</string>
 
     <!-- Note Detail Bottom Nav View Menu -->
     <string name="note_detail_bottom_nav_view_menu_share">Partager</string>
@@ -46,6 +47,12 @@
     <string name="note_detail_bottom_nav_view_menu_trash">Supprimer</string>
     <string name="note_detail_bottom_nav_view_menu_print">Imprimer</string>
     <string name="note_detail_bottom_nav_view_menu_restore">Restaurer</string>
+
+    <!-- Note Detail Bottom Nav View Menu Edition Mode -->
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_checklist">Liste</string>
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_format">Formatage</string>
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_gallery">Galerie</string>
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_handwrite">Écriture manuscrite</string>
 
     <string-array name="categories_array">
         <item>Voyage</item>

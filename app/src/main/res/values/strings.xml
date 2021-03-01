@@ -21,7 +21,7 @@
     <string name="note_detail_action_redo">Redo</string>
     <string name="note_detail_nb_character">character</string>
     <string name="note_detail_nb_characters">characters</string>
-    <string name="note_detail_is_empty">Title should not be empty</string>
+    <string name="note_detail_is_empty">Both fields should not be empty</string>
 
     <!-- Note Detail Toolbar Menu -->
     <string name="note_detail_toolbar_menu_validate">Validate</string>
@@ -47,6 +47,12 @@
     <string name="note_detail_bottom_nav_view_menu_trash">Delete</string>
     <string name="note_detail_bottom_nav_view_menu_print">Print</string>
     <string name="note_detail_bottom_nav_view_menu_restore">Restore</string>
+
+    <!-- Note Detail Bottom Nav View Menu Edition Mode -->
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_checklist">Checklist</string>
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_format">Format</string>
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_gallery">Gallery</string>
+    <string name="note_detail_bottom_nav_view_menu_edition_mode_handwrite">Handwrite</string>
 
     <string-array name="categories_array">
         <item>Travel</item>

@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/note_detail_bottom_nav_view_menu_share"
-        android:icon="@drawable/ic_share"
-        android:title="@string/note_detail_bottom_nav_view_menu_share"
+        android:id="@+id/note_detail_bottom_nav_view_menu_edition_mode_checklist"
+        android:icon="@drawable/ic_checklist"
+        android:title="@string/note_detail_bottom_nav_view_menu_edition_mode_checklist"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/note_detail_bottom_nav_view_menu_favorites"
-        android:icon="@drawable/ic_star"
-        android:title="@string/note_detail_bottom_nav_view_menu_add_to_favorites"
+        android:id="@+id/note_detail_bottom_nav_view_menu_edition_mode_format"
+        android:icon="@drawable/ic_text_formatting"
+        android:title="@string/note_detail_bottom_nav_view_menu_edition_mode_format"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/note_detail_bottom_nav_view_menu_trash"
-        android:icon="@drawable/ic_delete"
-        android:title="@string/note_detail_bottom_nav_view_menu_trash"
+        android:id="@+id/note_detail_bottom_nav_view_menu_edition_mode_gallery"
+        android:icon="@drawable/ic_gallery"
+        android:title="@string/note_detail_bottom_nav_view_menu_edition_mode_gallery"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/note_detail_bottom_nav_view_menu_print"
-        android:icon="@drawable/ic_printer"
-        android:title="@string/note_detail_bottom_nav_view_menu_print"
+        android:id="@+id/note_detail_bottom_nav_view_menu_edition_mode_handwrite"
+        android:icon="@drawable/ic_handwriting"
+        android:title="@string/note_detail_bottom_nav_view_menu_edition_mode_handwrite"
         app:showAsAction="ifRoom" />
 </menu>
