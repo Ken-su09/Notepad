@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 class RecyclerViewNoteAdapter(
     private var listOfNotes: MutableList<Note>,
@@ -25,7 +26,12 @@ class RecyclerViewNoteAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = listOfNotes[position].title
         holder.content.text = listOfNotes[position].content
-        holder.date.text = listOfNotes[position].date
+
+        if (listOfNotes[position].date.isEmpty()) {
+            holder.date.text = Calendar.getInstance().time.toString()
+        } else {
+            holder.date.text = listOfNotes[position].date
+        }
 
         holder.cardView.tag = position
         holder.cardView.setOnClickListener(itemClickListener)

@@ -18,8 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NoteDetailActivity"
-            android:windowSoftInputMode="stateVisible">
+            android:name=".NoteDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".NoteListActivity" />
