@@ -1,18 +1,25 @@
 package com.example.notepad
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -26,8 +33,14 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     private var fromFavorites = false
     private var fromDeletedNotes = false
 
+    private lateinit var sortByTitle: MenuItem
+    private lateinit var sortByFavorite: MenuItem
+    private lateinit var sortByDate: MenuItem
+
+
     private lateinit var adapter: RecyclerViewNoteAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var searchBarEditText: AppCompatEditText
 
     private var bottomNavigationView: BottomNavigationView? = null
     private var floatingButton: FloatingActionButton? = null
@@ -109,6 +122,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView = findViewById(R.id.activity_note_list_recyclerview)
         floatingButton = findViewById(R.id.activity_note_list_floating_button)
         bottomNavigationView = findViewById(R.id.activity_note_list_bottom_nav_view)
+        searchBarEditText = findViewById(R.id.activity_note_list_search)
 
         //endregion
 
@@ -132,6 +146,48 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         bottomNavigationView!!.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         floatingButton!!.setOnClickListener(this)
 
+        searchBarEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+//                listOfAllNotes = noteDao.getAllNotes()
+//                listOfFavoritesNotes = noteDao.getFavoritesNotes()
+//                listOfDeletedNotes = noteDao.getDeletedNotes()
+//
+//                main_search_bar_value = main_SearchBar!!.text.toString()
+//
+//                val filteredList = gestionnaireContacts!!.getContactConcernByFilter(main_filter, main_search_bar_value)
+//                val contactListDb = ContactManager(this@MainActivity)
+//
+////                if (sharedPref.getString("tri", "nom") == "nom") {
+////                    contactListDb.sortContactByFirstNameAZ()
+////                    contactListDb.contactList.retainAll(filteredList)
+////                } else {
+////                    contactListDb.sortContactByPriority()
+////                    contactListDb.contactList.retainAll(filteredList)
+////                }
+//                gestionnaireContacts!!.contactList.clear()
+//                gestionnaireContacts!!.contactList.addAll(contactListDb.contactList)
+//
+//
+//                adapter = RecyclerViewNoteAdapter(listOfAllNotes, this)
+//                recyclerViewInit(adapter)
+            }
+
+            override fun afterTextChanged(s: Editable) {
+
+            }
+
+
+        })
+
         //endregion
     }
 
@@ -139,18 +195,55 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.note_list_toolbar_menu, menu)
+        sortByTitle = menu!!.findItem(R.id.sort_by_title)
+        sortByFavorite = menu.findItem(R.id.sort_by_favorite)
+        sortByDate = menu.findItem(R.id.sort_by_date)
+        val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
+        when (sharedPreferences.getString("tri", "date")) {
+            "title" -> sortByTitle.isChecked = true
+            "favorite" -> sortByFavorite.isChecked = true
+            "date" -> sortByDate.isChecked = true
+            else -> sortByTitle.isChecked = true
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
+        val edit: SharedPreferences.Editor = sharedPreferences.edit()
+
         when (item.itemId) {
-            R.id.note_list_toolbar_menu_search -> {
-
+            R.id.sort_by_title -> {
+                if (!item.isChecked) {
+                    adapter = if (fromFavorites) {
+                        RecyclerViewNoteAdapter(
+                            noteDao.getAllFavoriteNotesOrderByTitleAZ(),
+                            this
+                        )
+                    } else {
+                        RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                    }
+                    recyclerViewInit(adapter)
+                    edit.putString("Sort_by", "title")
+                    edit.apply()
+                    item.isChecked = true
+                }
             }
-            R.id.note_list_toolbar_menu_sort_by -> {
-
+            R.id.sort_by_favorite -> {
+                adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByFavoriteAZ(), this)
+                recyclerViewInit(adapter)
+                edit.putString("Sort_by", "favorite")
+                edit.apply()
+                item.isChecked = true
+            }
+            R.id.sort_by_date -> {
+                item.isChecked = true
+//                noteDao.getAllNotesOrderByFavoriteAZ()
+//                edit.putString("Sort_by", "favorite")
+//                edit.apply()
             }
         }
+        hideKeyboard()
         return super.onOptionsItemSelected(item)
     }
 
@@ -205,6 +298,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromAllNotes = false
         fromFavorites = true
         fromDeletedNotes = false
+        sortByFavorite.isVisible = false
     }
 
     private fun toAllNotes() {
@@ -225,6 +319,25 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromAllNotes = false
         fromFavorites = false
         fromDeletedNotes = true
+    }
+
+//    fun getNoteByFilterSearchBar(filterList: ArrayList<String>, name: String): ArrayList<Note> {
+//        val contactFilterList: ArrayList<Note>? = getAllContactFilter(filterList)
+//        val contactList = getContactByName(name)
+//        if (contactFilterList != null) {
+//            return intersectContactWithAllInformation(contactList, contactFilterList)
+//        }
+//        return contactList
+//    }
+
+    private fun hideKeyboard() {
+        val imm: InputMethodManager =
+            this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        var view = this.currentFocus
+        if (view == null) {
+            view = View(this)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     //endregion

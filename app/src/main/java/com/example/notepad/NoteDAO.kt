@@ -35,6 +35,27 @@ interface NoteDAO {
 
     /**
      * Usage:
+     * dao.getAllNotesOrderByTitleAZ()
+     */
+    @Query("SELECT * FROM note WHERE isDeleted == 0 ORDER BY title ASC")
+    fun getAllNotesOrderByTitleAZ(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getFavoritesNotesOrderByTitleAZ()
+     */
+    @Query("SELECT * FROM note WHERE isDeleted == 0  ORDER BY isFavorite DESC")
+    fun getAllNotesOrderByFavoriteAZ(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getFavoritesNotesOrderByTitleAZ()
+     */
+    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0  ORDER BY title ASC")
+    fun getAllFavoriteNotesOrderByTitleAZ(): MutableList<Note>
+
+    /**
+     * Usage:
      * dao.insertNote(note)
      */
     @Insert
