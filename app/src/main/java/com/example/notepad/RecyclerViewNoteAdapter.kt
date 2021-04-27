@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
@@ -33,6 +34,12 @@ class RecyclerViewNoteAdapter(
             holder.date.text = listOfNotes[position].date
         }
 
+        if (listOfNotes[position].isFavorite == 1) {
+            holder.isFavorite.visibility = View.VISIBLE
+        } else {
+            holder.isFavorite.visibility = View.INVISIBLE
+        }
+
         holder.cardView.tag = position
         holder.cardView.setOnClickListener(itemClickListener)
     }
@@ -42,5 +49,6 @@ class RecyclerViewNoteAdapter(
         val content: TextView = view.findViewById(R.id.item_note_content)
         val date: TextView = view.findViewById(R.id.item_note_date)
         val cardView: CardView = view.findViewById(R.id.item_note_cardview)
+        val isFavorite: AppCompatImageView = view.findViewById(R.id.item_note_is_favorite)
     }
 }
