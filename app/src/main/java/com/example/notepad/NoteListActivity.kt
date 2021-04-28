@@ -37,7 +37,6 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var sortByFavorite: MenuItem
     private lateinit var sortByDate: MenuItem
 
-
     private lateinit var adapter: RecyclerViewNoteAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBarEditText: AppCompatEditText

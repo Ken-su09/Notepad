@@ -4,24 +4,24 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
-class NoteDetailActivity : AppCompatActivity() {
+class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     //region ========================================== Val or Var ==========================================
 
@@ -45,43 +45,16 @@ class NoteDetailActivity : AppCompatActivity() {
     private var listOfNotes: MutableList<Note> = noteDao.getAllNotes()
 
     private var noteDetailToolbar: Toolbar? = null
-    private var noteDetailBottomNavigationView: BottomNavigationView? = null
-    private var noteDetailEditionModeBottomNavigationView: BottomNavigationView? = null
-    private var noteDetailDeletedBottomNavigationView: BottomNavigationView? = null
+    private var noteDetailBottomNav: LinearLayout? = null
+    private var noteDetailEditionModeBottomNav: BottomNavigationView? = null
+    private var noteDetailDeletedBottomNav: BottomNavigationView? = null
 
-    private val mOnNavigationItemSelectedListenerNoteDetail =
-        BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.note_detail_bottom_nav_view_menu_share -> {
-                    shareNote(note!!)
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.note_detail_bottom_nav_view_menu_favorites -> {
-                    if (isFavorite == 1) {
-                        noteDetailBottomNavigationView!!.menu.setGroupCheckable(1, false, false)
-                        menuItem.setIcon(R.drawable.ic_star)
-                        menuItem.setTitle(R.string.note_detail_bottom_nav_view_menu_add_to_favorites)
-                        isFavorite = 0
-                        menuItem.isChecked = false
-                    } else {
-                        noteDetailBottomNavigationView!!.menu.setGroupCheckable(1, true, false)
-                        menuItem.setIcon(R.drawable.ic_full_star)
-                        isFavorite = 1
-                    }
-                    saveNote()
-
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.note_detail_bottom_nav_view_menu_trash -> {
-                    saveConfirmDeleteNoteDialog()
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.note_detail_bottom_nav_view_menu_print -> {
-                    return@OnNavigationItemSelectedListener true
-                }
-            }
-            false
-        }
+    private lateinit var noteDetailBottomNavItemShare: RelativeLayout
+    private lateinit var noteDetailBottomNavItemFav: RelativeLayout
+    private lateinit var noteDetailBottomNavItemFavImage: AppCompatImageView
+    private lateinit var noteDetailBottomNavItemFavText: TextView
+    private lateinit var noteDetailBottomNavItemTrash: RelativeLayout
+    private lateinit var noteDetailBottomNavItemPrint: RelativeLayout
 
     private val mOnNavigationItemSelectedListenerNoteDetailDeleted =
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
@@ -121,38 +94,25 @@ class NoteDetailActivity : AppCompatActivity() {
         noteDetailActivityDate = findViewById(R.id.activity_note_detail_date)
         noteDetailActivitySpinner = findViewById(R.id.activity_note_detail_spinner)
 
+        noteDetailBottomNavItemShare = findViewById(R.id.note_detail_bottom_nav_share)
+        noteDetailBottomNavItemFav = findViewById(R.id.note_detail_bottom_nav_favorite)
+        noteDetailBottomNavItemFavImage = findViewById(R.id.note_detail_bottom_nav_favorite_image)
+        noteDetailBottomNavItemFavText = findViewById(R.id.note_detail_bottom_nav_favorite_text)
+        noteDetailBottomNavItemTrash = findViewById(R.id.note_detail_bottom_nav_trash)
+        noteDetailBottomNavItemPrint = findViewById(R.id.note_detail_bottom_nav_print)
+
+        noteDetailBottomNav = findViewById(R.id.note_detail_bottom_nav)
+        noteDetailEditionModeBottomNav = findViewById(R.id.note_detail_bottom_nav_edition_mode)
+        noteDetailDeletedBottomNav = findViewById(R.id.note_deleted_detail_bottom_nav)
+
         //endregion
 
-        noteDetailBottomNavigationView =
-            findViewById(R.id.activity_note_detail_bottom_nav_view)
-        noteDetailBottomNavigationView!!.setOnNavigationItemSelectedListener(
-            mOnNavigationItemSelectedListenerNoteDetail
-        )
-
-        noteDetailEditionModeBottomNavigationView =
-            findViewById(R.id.activity_note_detail_bottom_nav_view_edition_mode)
-
-        noteDetailDeletedBottomNavigationView =
-            findViewById(R.id.activity_note_deleted_detail_bottom_nav_view)
-        noteDetailDeletedBottomNavigationView!!.setOnNavigationItemSelectedListener(
+        noteDetailDeletedBottomNav!!.setOnNavigationItemSelectedListener(
             mOnNavigationItemSelectedListenerNoteDetailDeleted
         )
 
-//        noteDetailBottomNavigationView!!.menu.setGroupCheckable(0, false, false)
-        noteDetailEditionModeBottomNavigationView!!.menu.setGroupCheckable(0, false, true)
-        noteDetailDeletedBottomNavigationView!!.menu.setGroupCheckable(0, false, true)
-
-        val menuItemFavorite =
-            noteDetailBottomNavigationView!!.menu.getItem(1)
-
-        if (isFavorite == 1) {
-            menuItemFavorite.setIcon(R.drawable.ic_full_star)
-            menuItemFavorite.isChecked = true
-        } else {
-            menuItemFavorite.setIcon(R.drawable.ic_star)
-            menuItemFavorite.setTitle(R.string.note_detail_bottom_nav_view_menu_add_to_favorites)
-            menuItemFavorite.isChecked = false
-        }
+        noteDetailEditionModeBottomNav!!.menu.setGroupCheckable(0, false, false)
+        noteDetailDeletedBottomNav!!.menu.setGroupCheckable(0, false, true)
 
         if (note != null) {
             noteDetailActivityTitle!!.setText(note?.title)
@@ -161,13 +121,15 @@ class NoteDetailActivity : AppCompatActivity() {
             isFavorite = note!!.isFavorite
 
             if (note!!.isDeleted == 1) {
-                noteDetailBottomNavigationView!!.visibility = View.GONE
+                noteDetailBottomNav!!.visibility = View.GONE
                 noteDetailToolbar!!.visibility = View.INVISIBLE
-                noteDetailDeletedBottomNavigationView!!.visibility = View.VISIBLE
+                noteDetailDeletedBottomNav!!.visibility = View.VISIBLE
                 noteDetailActivitySpinner!!.visibility = View.INVISIBLE
                 noteDetailActivityTitle!!.isEnabled = false
                 noteDetailActivityContent!!.isEnabled = false
             }
+
+            noteDetailToolbar!!.menu.setGroupVisible(1, true)
         } else {
             noteDetailActivityContent!!.requestFocus()
             val imm: InputMethodManager =
@@ -177,6 +139,8 @@ class NoteDetailActivity : AppCompatActivity() {
 
             changeToEditionMode()
         }
+
+        initFavoriteImageAndText()
 
         ArrayAdapter.createFromResource(
             this,
@@ -192,9 +156,34 @@ class NoteDetailActivity : AppCompatActivity() {
         noteDetailActivityTitle!!.setOnClickListener {
             changeToEditionMode()
         }
-        noteDetailActivityContent!!.setOnClickListener {
-            changeToEditionMode()
+//        noteDetailActivityContent!!.setOnClickListener {
+//        }
+
+        noteDetailActivityContent!!.addTextChangedListener {
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                    changeToEditionMode()
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    changeToEditionMode()
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+            }
         }
+
+        noteDetailBottomNavItemShare.setOnClickListener(this)
+        noteDetailBottomNavItemFav.setOnClickListener(this)
+        noteDetailBottomNavItemTrash.setOnClickListener(this)
+        noteDetailBottomNavItemPrint.setOnClickListener(this)
 
         //endregion
     }
@@ -223,12 +212,22 @@ class NoteDetailActivity : AppCompatActivity() {
 
     //region =========================================== Functions ==========================================
 
-    private fun changeToEditionMode() {
-        if (noteDetailActivityContent!!.requestFocus() || noteDetailActivityTitle!!.requestFocus()) {
-            noteDetailBottomNavigationView!!.visibility = View.GONE
-            noteDetailEditionModeBottomNavigationView!!.visibility = View.VISIBLE
-            noteDetailToolbar!!.menu.setGroupVisible(0, true)
+    private fun initFavoriteImageAndText() {
+        if (isFavorite == 1) {
+            noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_full_star)
+            noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#037dff"))
+        } else {
+            noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_star)
+            noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#000000"))
         }
+    }
+
+    private fun changeToEditionMode() {
+//        if (noteDetailActivityContent!!.requestFocus() || noteDetailActivityTitle!!.requestFocus()) {
+        noteDetailBottomNav!!.visibility = View.GONE
+        noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
+        noteDetailToolbar!!.menu.setGroupVisible(0, true)
+//        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -346,8 +345,8 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private fun afterSavingNote() {
 //        noteDetailActivityContent!!.focusable = View.NOT_FOCUSABLE
-        noteDetailBottomNavigationView!!.visibility = View.VISIBLE
-        noteDetailEditionModeBottomNavigationView!!.visibility = View.GONE
+        noteDetailBottomNav!!.visibility = View.VISIBLE
+        noteDetailEditionModeBottomNav!!.visibility = View.GONE
         closeKeyboard()
         noteDetailToolbar!!.menu.setGroupVisible(0, false)
 //        noteDetailActivityContent!!.focusable = View.FOCUSABLE_AUTO
@@ -422,6 +421,31 @@ class NoteDetailActivity : AppCompatActivity() {
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+            R.id.note_detail_bottom_nav_share -> {
+                shareNote(note!!)
+            }
+            R.id.note_detail_bottom_nav_favorite -> {
+                isFavorite = if (isFavorite == 1) {
+                    noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_star)
+                    noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#000000"))
+                    0
+                } else {
+                    noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_full_star)
+                    noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#037dff"))
+                    1
+                }
+                saveNote()
+            }
+            R.id.note_detail_bottom_nav_trash -> {
+                saveConfirmDeleteNoteDialog()
+            }
+            R.id.note_detail_bottom_nav_print -> {
+            }
         }
     }
 

@@ -77,29 +77,148 @@
         android:hint="@string/activity_note_detail_content_hint"
         android:inputType="textMultiLine"
         android:padding="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/activity_note_detail_bottom_nav_view"
+        app:layout_constraintBottom_toTopOf="@+id/note_detail_bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_date" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/activity_note_detail_bottom_nav_view"
+    <LinearLayout
+        android:id="@+id/note_detail_bottom_nav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#e6e6e6"
+        android:baselineAligned="false"
         android:isScrollContainer="true"
-        android:visibility="visible"
+        android:orientation="horizontal"
         app:elevation="8dp"
         app:itemBackground="@color/grey"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/note_detail_bottom_nav_view_menu" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/note_detail_bottom_nav_share"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_share"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                android:text="@string/note_detail_bottom_nav_share"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:ignore="VectorDrawableCompat" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/note_detail_bottom_nav_favorite"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/note_detail_bottom_nav_favorite_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_star"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:id="@+id/note_detail_bottom_nav_favorite_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                android:text="@string/note_detail_bottom_nav_view_menu_add_to_favorites"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:ignore="VectorDrawableCompat" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/note_detail_bottom_nav_trash"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_delete"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                android:text="@string/note_detail_bottom_nav_view_menu_trash"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:ignore="VectorDrawableCompat" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/note_detail_bottom_nav_print"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_printer"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                android:text="@string/note_detail_bottom_nav_view_menu_print"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:ignore="VectorDrawableCompat" />
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/activity_note_detail_bottom_nav_view_edition_mode"
+        android:id="@+id/note_detail_bottom_nav_edition_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -120,7 +239,7 @@
         app:menu="@menu/note_detail_bottom_nav_view_menu_edition_mode" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/activity_note_deleted_detail_bottom_nav_view"
+        android:id="@+id/note_deleted_detail_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

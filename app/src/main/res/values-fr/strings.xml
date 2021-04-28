@@ -42,7 +42,7 @@
     <string name="note_detail_is_empty">Les deux champs ne doivent pas être vides</string>
 
     <!-- Note Detail Bottom Nav View Menu -->
-    <string name="note_detail_bottom_nav_view_menu_share">Partager</string>
+    <string name="note_detail_bottom_nav_share">Partager</string>
     <string name="note_detail_bottom_nav_view_menu_add_to_favorites">Favoris</string>
     <string name="note_detail_bottom_nav_view_menu_trash">Supprimer</string>
     <string name="note_detail_bottom_nav_view_menu_print">Imprimer</string>
