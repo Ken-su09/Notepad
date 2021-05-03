@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +46,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var listOfNotes: MutableList<Note> = noteDao.getAllNotes()
 
     private var noteDetailToolbar: Toolbar? = null
+    private var noteDetailToolbarMenu: Menu? = null
     private var noteDetailBottomNav: LinearLayout? = null
     private var noteDetailEditionModeBottomNav: BottomNavigationView? = null
     private var noteDetailDeletedBottomNav: BottomNavigationView? = null
@@ -55,6 +57,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var noteDetailBottomNavItemFavText: TextView
     private lateinit var noteDetailBottomNavItemTrash: RelativeLayout
     private lateinit var noteDetailBottomNavItemPrint: RelativeLayout
+
 
     private val mOnNavigationItemSelectedListenerNoteDetailDeleted =
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
@@ -128,16 +131,11 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                 noteDetailActivityTitle!!.isEnabled = false
                 noteDetailActivityContent!!.isEnabled = false
             }
-
-            noteDetailToolbar!!.menu.setGroupVisible(1, true)
         } else {
             noteDetailActivityContent!!.requestFocus()
-            val imm: InputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(noteDetailActivityContent, InputMethodManager.SHOW_IMPLICIT)
+            val inputMM = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMM.showSoftInput(noteDetailActivityContent, InputMethodManager.SHOW_IMPLICIT)
             getDateTime()
-
-            changeToEditionMode()
         }
 
         initFavoriteImageAndText()
@@ -153,32 +151,23 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         //region ========================================= Listeners ========================================
 
-        noteDetailActivityTitle!!.setOnClickListener {
+        noteDetailActivityContent!!.setOnFocusChangeListener { _, _ ->
             changeToEditionMode()
         }
-//        noteDetailActivityContent!!.setOnClickListener {
-//        }
 
-        noteDetailActivityContent!!.addTextChangedListener {
-            object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    changeToEditionMode()
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    changeToEditionMode()
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
-
-            }
-        }
+//        noteDetailActivityContent!!.addTextChangedListener(object : TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {
+//                changeToEditionMode()
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//                changeToEditionMode()
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                changeToEditionMode()
+//            }
+//        })
 
         noteDetailBottomNavItemShare.setOnClickListener(this)
         noteDetailBottomNavItemFav.setOnClickListener(this)
@@ -192,6 +181,9 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.note_detail_toolbar_menu, menu)
+        noteDetailToolbarMenu = menu!!
+
+        noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, note == null)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -223,11 +215,11 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun changeToEditionMode() {
-//        if (noteDetailActivityContent!!.requestFocus() || noteDetailActivityTitle!!.requestFocus()) {
-        noteDetailBottomNav!!.visibility = View.GONE
-        noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
-        noteDetailToolbar!!.menu.setGroupVisible(0, true)
-//        }
+        if (noteDetailActivityContent!!.requestFocus() || noteDetailActivityTitle!!.requestFocus()) {
+            noteDetailBottomNav!!.visibility = View.GONE
+            noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
+            noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, true)
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -344,12 +336,16 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun afterSavingNote() {
-//        noteDetailActivityContent!!.focusable = View.NOT_FOCUSABLE
         noteDetailBottomNav!!.visibility = View.VISIBLE
         noteDetailEditionModeBottomNav!!.visibility = View.GONE
+        noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, false)
         closeKeyboard()
-        noteDetailToolbar!!.menu.setGroupVisible(0, false)
-//        noteDetailActivityContent!!.focusable = View.FOCUSABLE_AUTO
+        refreshActivity()
+//        noteDetailActivityContent!!.clearFocus()
+    }
+
+    private fun refreshActivity() {
+        startActivity(Intent(this, NoteDetailActivity::class.java).putExtra(EXTRA_NOTE_ID, noteId))
     }
 
     private fun intentToNoteListActivity() {
@@ -417,11 +413,9 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun closeKeyboard() {
-        this.currentFocus?.let { view ->
-            val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
-        }
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(noteDetailActivityContent!!.windowToken, 0)
     }
 
     override fun onClick(v: View?) {
