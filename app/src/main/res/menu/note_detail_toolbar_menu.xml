@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/note_detail_toolbar_menu_undo"
-        android:icon="@drawable/ic_undo"
-        android:title="@string/note_detail_toolbar_menu_delete"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/note_detail_toolbar_menu_redo"
-        android:icon="@drawable/ic_redo"
-        android:title="@string/note_detail_toolbar_menu_delete"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/note_detail_toolbar_menu_validate"
-        android:icon="@drawable/ic_validate"
-        android:title="@string/note_detail_toolbar_menu_validate"
-        app:showAsAction="ifRoom" />
+    <group
+        android:id="@+id/note_detail_toolbar_menu_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/note_detail_toolbar_menu_undo"
+            android:icon="@drawable/ic_undo"
+            android:title="@string/note_detail_toolbar_menu_delete"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/note_detail_toolbar_menu_redo"
+            android:icon="@drawable/ic_redo"
+            android:title="@string/note_detail_toolbar_menu_delete"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/note_detail_toolbar_menu_validate"
+            android:icon="@drawable/ic_validate"
+            android:title="@string/note_detail_toolbar_menu_validate"
+            app:showAsAction="ifRoom" />
+    </group>
 </menu>
