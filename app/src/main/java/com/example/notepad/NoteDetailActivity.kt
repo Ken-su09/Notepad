@@ -32,6 +32,8 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var isDeleted = 0
     private var date = Calendar.getInstance()
 
+    private var fromFavorites = false
+
     private var noteDetailActivityTitle: AppCompatEditText? = null
     private var noteDetailActivityContent: AppCompatEditText? = null
     private var noteDetailActivityDate: TextView? = null
@@ -83,6 +85,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         //endregion
 
         noteId = intent.getIntExtra(EXTRA_NOTE_ID, -1)
+        fromFavorites = intent.getBooleanExtra("fromFavorites", false)
         note = noteDao.getNoteById(noteId)
 
         //region ======================================= FindViewById =======================================
@@ -129,6 +132,9 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         } else {
             changeToEditionMode()
             convertDate(date)
+            if (fromFavorites) {
+                isFavorite = 1
+            }
         }
 
         initFavoriteImageAndText()
@@ -323,8 +329,6 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveNote() {
-        noteDetailActivityTitle!!.text!![0].isUpperCase()
-
         if (note != null) {
             if (emptyFields(
                     noteDetailActivityTitle!!.text.toString(),

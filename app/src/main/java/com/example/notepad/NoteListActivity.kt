@@ -391,6 +391,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun createNewNote() {
         val intent = Intent(this, NoteDetailActivity::class.java)
+        intent.putExtra("fromFavorites", fromFavorites)
         startActivity(intent)
     }
 
