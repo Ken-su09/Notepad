@@ -145,6 +145,12 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         noteDetailActivityContent!!.setOnFocusChangeListener { _, _ ->
             changeToEditionMode()
+//            noteDetailActivityTitle!!.clearFocus()
+        }
+
+        noteDetailActivityTitle!!.setOnFocusChangeListener { _, _ ->
+//            changeToEditionMode()
+//            noteDetailActivityContent!!.clearFocus()
         }
 
 //        noteDetailActivityContent!!.addTextChangedListener(object : TextWatcher {
@@ -309,13 +315,11 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun changeToEditionMode() {
-        if (noteDetailActivityContent!!.requestFocus() || noteDetailActivityTitle!!.requestFocus()) {
-            noteDetailBottomNav!!.visibility = View.GONE
-            noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
+        noteDetailBottomNav!!.visibility = View.GONE
+        noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
 
-            if (noteDetailToolbarMenu != null) {
-                noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, true)
-            }
+        if (noteDetailToolbarMenu != null) {
+            noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, true)
         }
     }
 
