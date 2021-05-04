@@ -30,7 +30,6 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var isFavorite = 0
     private var isDeleted = 0
     private var date = Calendar.getInstance()
-    private var noteDetailActivityDateField = ""
 
     private var noteDetailActivityTitle: AppCompatEditText? = null
     private var noteDetailActivityContent: AppCompatEditText? = null
@@ -127,9 +126,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                 noteDetailActivityContent!!.isEnabled = false
             }
         } else {
-            noteDetailActivityContent!!.requestFocus()
-            val inputMM = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMM.showSoftInput(noteDetailActivityContent, InputMethodManager.SHOW_IMPLICIT)
+            changeToEditionMode()
             convertDate(date)
         }
 
@@ -199,7 +196,8 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     //region =========================================== Functions ==========================================
 
-    private fun convertDate(date: Calendar): String {val rightNow = Calendar.getInstance()
+    private fun convertDate(date: Calendar): String {
+        val rightNow = Calendar.getInstance()
         val hour24 = rightNow.get(Calendar.HOUR_OF_DAY)
         val minutes = rightNow.get(Calendar.MINUTE)
 
@@ -314,7 +312,10 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (noteDetailActivityContent!!.requestFocus() || noteDetailActivityTitle!!.requestFocus()) {
             noteDetailBottomNav!!.visibility = View.GONE
             noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
-            noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, true)
+
+            if (noteDetailToolbarMenu != null) {
+                noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, true)
+            }
         }
     }
 

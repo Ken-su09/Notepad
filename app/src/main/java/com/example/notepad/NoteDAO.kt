@@ -51,7 +51,7 @@ interface NoteDAO {
      * Usage:
      * dao.getAllNotesOrderByDateAZ()
      */
-    @Query("SELECT * FROM note WHERE isDeleted == 0  ORDER BY date ASC")
+    @Query("SELECT * FROM note WHERE isDeleted == 0  ORDER BY date DESC")
     fun getAllNotesOrderByDateAZ(): MutableList<Note>
 
     /**

@@ -1,6 +1,5 @@
 package com.example.notepad
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -12,7 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
@@ -131,32 +130,33 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
         when (sharedPreferences.getString("tri", "date")) {
             "title" -> {
-                adapter = if (fromFavorites) {
-                    RecyclerViewNoteAdapter(
-                        noteDao.getAllFavoriteNotesOrderByTitleAZ(),
-                        this
-                    )
+                if (fromFavorites) {
+                    adapter =
+                        RecyclerViewNoteAdapter(noteDao.getAllFavoriteNotesOrderByTitleAZ(), this)
+                    listOfFavoritesNotes = noteDao.getAllFavoriteNotesOrderByTitleAZ()
                 } else {
-                    RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                    adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                    listOfAllNotes = noteDao.getAllNotesOrderByTitleAZ()
                 }
             }
             "favorite" -> {
                 adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByFavoriteAZ(), this)
+                listOfAllNotes = noteDao.getAllNotesOrderByFavoriteAZ()
             }
             "date" -> {
-                adapter = if (fromFavorites) {
-                    RecyclerViewNoteAdapter(
+                if (fromFavorites) {
+                    adapter = RecyclerViewNoteAdapter(
                         noteDao.getAllFavoriteNotesOrderByDateAZ(),
                         this
                     )
+                    listOfFavoritesNotes = noteDao.getAllFavoriteNotesOrderByDateAZ()
                 } else {
-                    RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+                    adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+                    listOfAllNotes = noteDao.getAllNotesOrderByDateAZ()
                 }
             }
             else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
         }
-
-//        adapter = RecyclerViewNoteAdapter(listOfAllNotes, this)
         recyclerViewInit(adapter)
 
         val fromRestoreNote = intent.getIntExtra("restoreNote", 1)
@@ -231,7 +231,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         sortByDate = menu.findItem(R.id.sort_by_date)
 
         val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
-        when (sharedPreferences.getString("tri", "date")) {
+        when (sharedPreferences.getString("Sort_by", "date")) {
             "title" -> sortByTitle.isChecked = true
             "favorite" -> sortByFavorite.isChecked = true
             "date" -> sortByDate.isChecked = true
@@ -246,16 +246,25 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         when (item.itemId) {
             R.id.sort_by_title -> {
                 if (!item.isChecked) {
-                    adapter = when {
-                        fromFavorites -> RecyclerViewNoteAdapter(
-                            noteDao.getAllFavoriteNotesOrderByTitleAZ(),
-                            this
-                        )
-                        fromDeletedNotes -> RecyclerViewNoteAdapter(
-                            noteDao.getDeletedNotesOrderByTitleAZ(),
-                            this
-                        )
-                        else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                    when {
+                        fromFavorites -> {
+                            adapter = RecyclerViewNoteAdapter(
+                                noteDao.getAllFavoriteNotesOrderByTitleAZ(),
+                                this
+                            )
+                            listOfFavoritesNotes = noteDao.getAllFavoriteNotesOrderByTitleAZ()
+                        }
+                        fromDeletedNotes -> {
+                            adapter = RecyclerViewNoteAdapter(
+                                noteDao.getDeletedNotesOrderByTitleAZ(),
+                                this
+                            )
+                            listOfDeletedNotes = noteDao.getDeletedNotesOrderByTitleAZ()
+                        }
+                        else -> {
+                            adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                            listOfAllNotes = noteDao.getAllNotesOrderByTitleAZ()
+                        }
                     }
                     recyclerViewInit(adapter)
                     edit.putString("Sort_by", "title")
@@ -264,16 +273,26 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             R.id.sort_by_favorite -> {
-                adapter = when {
-                    fromFavorites -> RecyclerViewNoteAdapter(
-                        noteDao.getAllFavoriteNotesOrderByTitleAZ(),
-                        this
-                    )
-                    fromDeletedNotes -> RecyclerViewNoteAdapter(
-                        noteDao.getDeletedNotesOrderByFavoriteAZ(),
-                        this
-                    )
-                    else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByFavoriteAZ(), this)
+                when {
+                    fromFavorites -> {
+                        adapter = RecyclerViewNoteAdapter(
+                            noteDao.getAllFavoriteNotesOrderByTitleAZ(),
+                            this
+                        )
+                        listOfFavoritesNotes = noteDao.getAllFavoriteNotesOrderByTitleAZ()
+                    }
+                    fromDeletedNotes -> {
+                        adapter = RecyclerViewNoteAdapter(
+                            noteDao.getDeletedNotesOrderByFavoriteAZ(),
+                            this
+                        )
+                        listOfDeletedNotes = noteDao.getDeletedNotesOrderByFavoriteAZ()
+                    }
+                    else -> {
+                        adapter =
+                            RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByFavoriteAZ(), this)
+                        listOfAllNotes = noteDao.getAllNotesOrderByFavoriteAZ()
+                    }
                 }
                 recyclerViewInit(adapter)
                 edit.putString("Sort_by", "favorite")
@@ -281,16 +300,25 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                 item.isChecked = true
             }
             R.id.sort_by_date -> {
-                adapter = when {
-                    fromFavorites -> RecyclerViewNoteAdapter(
-                        noteDao.getAllFavoriteNotesOrderByDateAZ(),
-                        this
-                    )
-                    fromDeletedNotes -> RecyclerViewNoteAdapter(
-                        noteDao.getDeletedNotesOrderByDateAZ(),
-                        this
-                    )
-                    else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+                when {
+                    fromFavorites -> {
+                        adapter = RecyclerViewNoteAdapter(
+                            noteDao.getAllFavoriteNotesOrderByDateAZ(),
+                            this
+                        )
+                        listOfFavoritesNotes = noteDao.getAllFavoriteNotesOrderByDateAZ()
+                    }
+                    fromDeletedNotes -> {
+                        adapter = RecyclerViewNoteAdapter(
+                            noteDao.getDeletedNotesOrderByDateAZ(),
+                            this
+                        )
+                        listOfDeletedNotes = noteDao.getDeletedNotesOrderByDateAZ()
+                    }
+                    else -> {
+                        adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+                        listOfAllNotes = noteDao.getAllNotesOrderByDateAZ()
+                    }
                 }
                 recyclerViewInit(adapter)
                 edit.putString("Sort_by", "date")
@@ -319,7 +347,11 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
             when (v?.id) {
                 R.id.activity_note_list_add_new_note -> createNewNote()
                 R.id.activity_note_list_delete_trash -> {
-                    confirmDeleteAllNotesDialog()
+                    if (listOfDeletedNotes.isEmpty()) {
+                        Toast.makeText(this, "The list is empty", Toast.LENGTH_SHORT).show()
+                    } else {
+                        confirmDeleteAllNotesDialog()
+                    }
                 }
             }
         }
@@ -334,7 +366,6 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
             .setTitle(getString(R.string.note_list_alert_dialog_delete_all_notes_title))
             .setMessage(getString(R.string.note_list_alert_dialog_delete_all_notes_subtitle))
             .setPositiveButton(getString(R.string.note_list_alert_dialog_delete_all_notes_positive_button)) { _, _ ->
-
                 noteDao.deleteNotes(listOfDeletedNotes)
                 refreshActivity()
             }
@@ -403,7 +434,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromAllNotes = false
         fromFavorites = false
         fromDeletedNotes = true
-        sortByFavorite.isVisible = true
+        sortByFavorite.isVisible = false
         floatingButtonAddNewNote!!.visibility = View.GONE
         floatingButtonDeleteTrash!!.visibility = View.VISIBLE
     }
