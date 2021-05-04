@@ -42,17 +42,52 @@ interface NoteDAO {
 
     /**
      * Usage:
-     * dao.getFavoritesNotesOrderByTitleAZ()
+     * dao.getAllNotesOrderByFavoriteAZ()
      */
-    @Query("SELECT * FROM note WHERE isDeleted == 0  ORDER BY isFavorite DESC")
+    @Query("SELECT * FROM note WHERE isDeleted == 0 ORDER BY isFavorite DESC")
     fun getAllNotesOrderByFavoriteAZ(): MutableList<Note>
 
     /**
      * Usage:
-     * dao.getFavoritesNotesOrderByTitleAZ()
+     * dao.getAllNotesOrderByDateAZ()
      */
-    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0  ORDER BY title ASC")
+    @Query("SELECT * FROM note WHERE isDeleted == 0  ORDER BY date ASC")
+    fun getAllNotesOrderByDateAZ(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getAllFavoriteNotesOrderByTitleAZ()
+     */
+    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0 ORDER BY title ASC")
     fun getAllFavoriteNotesOrderByTitleAZ(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getAllFavoriteNotesOrderByDateAZ()
+     */
+    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0 ORDER BY date ASC")
+    fun getAllFavoriteNotesOrderByDateAZ(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getDeletedNotesOrderByTitleAZ()
+     */
+    @Query("SELECT * FROM note WHERE isDeleted == 1 ORDER BY title ASC")
+    fun getDeletedNotesOrderByTitleAZ(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getDeletedNotesOrderByFavoriteAZ()
+     */
+    @Query("SELECT * FROM note WHERE isDeleted == 1 ORDER BY isFavorite DESC")
+    fun getDeletedNotesOrderByFavoriteAZ(): MutableList<Note>
+
+    /**
+     * Usage:
+     * dao.getDeletedNotesOrderByDateAZ()
+     */
+    @Query("SELECT * FROM note WHERE isDeleted == 1 ORDER BY date ASC")
+    fun getDeletedNotesOrderByDateAZ(): MutableList<Note>
 
     /**
      * Usage:

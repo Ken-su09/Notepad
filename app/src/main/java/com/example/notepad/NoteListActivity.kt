@@ -125,7 +125,35 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
         //endregion
 
-        adapter = RecyclerViewNoteAdapter(listOfAllNotes, this)
+        val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
+        when (sharedPreferences.getString("tri", "date")) {
+            "title" -> {
+                adapter = if (fromFavorites) {
+                    RecyclerViewNoteAdapter(
+                        noteDao.getAllFavoriteNotesOrderByTitleAZ(),
+                        this
+                    )
+                } else {
+                    RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                }
+            }
+            "favorite" -> {
+                adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByFavoriteAZ(), this)
+            }
+            "date" -> {
+                adapter = if (fromFavorites) {
+                    RecyclerViewNoteAdapter(
+                        noteDao.getAllFavoriteNotesOrderByDateAZ(),
+                        this
+                    )
+                } else {
+                    RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+                }
+            }
+            else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+        }
+
+//        adapter = RecyclerViewNoteAdapter(listOfAllNotes, this)
         recyclerViewInit(adapter)
 
         val fromRestoreNote = intent.getIntExtra("restoreNote", 1)
@@ -197,12 +225,13 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         sortByTitle = menu!!.findItem(R.id.sort_by_title)
         sortByFavorite = menu.findItem(R.id.sort_by_favorite)
         sortByDate = menu.findItem(R.id.sort_by_date)
+
         val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
         when (sharedPreferences.getString("tri", "date")) {
             "title" -> sortByTitle.isChecked = true
             "favorite" -> sortByFavorite.isChecked = true
             "date" -> sortByDate.isChecked = true
-            else -> sortByTitle.isChecked = true
+            else -> sortByDate.isChecked = true
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -210,17 +239,19 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
         val edit: SharedPreferences.Editor = sharedPreferences.edit()
-
         when (item.itemId) {
             R.id.sort_by_title -> {
                 if (!item.isChecked) {
-                    adapter = if (fromFavorites) {
-                        RecyclerViewNoteAdapter(
+                    adapter = when {
+                        fromFavorites -> RecyclerViewNoteAdapter(
                             noteDao.getAllFavoriteNotesOrderByTitleAZ(),
                             this
                         )
-                    } else {
-                        RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                        fromDeletedNotes -> RecyclerViewNoteAdapter(
+                            noteDao.getDeletedNotesOrderByTitleAZ(),
+                            this
+                        )
+                        else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
                     }
                     recyclerViewInit(adapter)
                     edit.putString("Sort_by", "title")
@@ -229,17 +260,38 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             R.id.sort_by_favorite -> {
-                adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByFavoriteAZ(), this)
+                adapter = when {
+                    fromFavorites -> RecyclerViewNoteAdapter(
+                        noteDao.getAllFavoriteNotesOrderByTitleAZ(),
+                        this
+                    )
+                    fromDeletedNotes -> RecyclerViewNoteAdapter(
+                        noteDao.getDeletedNotesOrderByFavoriteAZ(),
+                        this
+                    )
+                    else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByFavoriteAZ(), this)
+                }
                 recyclerViewInit(adapter)
                 edit.putString("Sort_by", "favorite")
                 edit.apply()
                 item.isChecked = true
             }
             R.id.sort_by_date -> {
+                adapter = when {
+                    fromFavorites -> RecyclerViewNoteAdapter(
+                        noteDao.getAllFavoriteNotesOrderByDateAZ(),
+                        this
+                    )
+                    fromDeletedNotes -> RecyclerViewNoteAdapter(
+                        noteDao.getDeletedNotesOrderByDateAZ(),
+                        this
+                    )
+                    else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+                }
+                recyclerViewInit(adapter)
+                edit.putString("Sort_by", "date")
+                edit.apply()
                 item.isChecked = true
-//                noteDao.getAllNotesOrderByFavoriteAZ()
-//                edit.putString("Sort_by", "favorite")
-//                edit.apply()
             }
         }
         hideKeyboard()
@@ -308,6 +360,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromAllNotes = true
         fromFavorites = false
         fromDeletedNotes = false
+        sortByFavorite.isVisible = true
     }
 
     private fun toDeletedNotes() {
@@ -318,6 +371,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromAllNotes = false
         fromFavorites = false
         fromDeletedNotes = true
+        sortByFavorite.isVisible = true
     }
 
 //    fun getNoteByFilterSearchBar(filterList: ArrayList<String>, name: String): ArrayList<Note> {

@@ -6,19 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
@@ -34,7 +30,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var noteId = 0
     private var isFavorite = 0
     private var isDeleted = 0
-    private var date: Calendar? = null
+    private var date = Calendar.getInstance()
     private var noteDetailActivityDateField = ""
 
     private var noteDetailActivityTitle: AppCompatEditText? = null
@@ -135,7 +131,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             noteDetailActivityContent!!.requestFocus()
             val inputMM = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMM.showSoftInput(noteDetailActivityContent, InputMethodManager.SHOW_IMPLICIT)
-            getDateTime()
+            convertDate(date)
         }
 
         initFavoriteImageAndText()
@@ -204,6 +200,107 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     //region =========================================== Functions ==========================================
 
+    private fun convertDate(date: Calendar): String {val rightNow = Calendar.getInstance()
+        val hour24 = rightNow.get(Calendar.HOUR_OF_DAY)
+        val minutes = rightNow.get(Calendar.MINUTE)
+
+        val hour = if (minutes < 10 && hour24 < 10) {
+            "0$hour24:0$minutes"
+        } else if (minutes < 10 && hour24 > 10) {
+            "$hour24:0$minutes"
+        } else if (minutes > 10 && hour24 < 10) {
+            "0$hour24:$minutes"
+        } else {
+            "$hour24:$minutes"
+        }
+
+        val day = when {
+            date.time.toString().contains("Mon") -> {
+                "Lundi"
+            }
+            date.time.toString().contains("Tue") -> {
+                "Mardi"
+            }
+            date.time.toString().contains("Wed") -> {
+                "Mercredi"
+            }
+            date.time.toString().contains("Thu") -> {
+                "Jeudi"
+            }
+            date.time.toString().contains("Fri") -> {
+                "Vendredi"
+            }
+            date.time.toString().contains("Sat") -> {
+                "Samedi"
+            }
+            date.time.toString().contains("Sun") -> {
+                "Dimanche"
+            }
+            else -> {
+                "Lundi"
+            }
+        }
+
+        val month = when {
+            date.time.toString().contains("Jan") -> {
+                "Janvier"
+            }
+            date.time.toString().contains("Feb") -> {
+                "Février"
+            }
+            date.time.toString().contains("Mar") -> {
+                "Mars"
+            }
+            date.time.toString().contains("Apr") -> {
+                "Avril"
+            }
+            date.time.toString().contains("May") -> {
+                "Mai"
+            }
+            date.time.toString().contains("Jun") -> {
+                "Juin"
+            }
+            date.time.toString().contains("Jul") -> {
+                "Juillet"
+            }
+            date.time.toString().contains("Aug") -> {
+                "Aout"
+            }
+            date.time.toString().contains("Sep") -> {
+                "Septembre"
+            }
+            date.time.toString().contains("Oct") -> {
+                "Octobre"
+            }
+            date.time.toString().contains("Nov") -> {
+                "Novembre"
+            }
+            date.time.toString().contains("Dec") -> {
+                "Décembre"
+            }
+            else -> {
+                "Avril"
+            }
+        }
+
+        val year = when {
+            date.time.toString().contains("2021") -> {
+                "2021"
+            }
+            date.time.toString().contains("2022") -> {
+                "2022"
+            }
+            else -> {
+                "2023"
+            }
+        }
+
+        noteDetailActivityDate!!.text =
+            "$day ${date.time.day} $month $year à $hour"
+
+        return "$day ${date.time.day} $month $year à $hour"
+    }
+
     private fun initFavoriteImageAndText() {
         if (isFavorite == 1) {
             noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_full_star)
@@ -222,81 +319,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun getDateTime() {
-        val rightNow = Calendar.getInstance()
-        val hour24 = rightNow.get(Calendar.HOUR_OF_DAY)
-        val minutes = rightNow.get(Calendar.MINUTE)
-
-        noteDetailActivityDateField = if (minutes < 10 && hour24 < 10) {
-            "0$hour24:0$minutes"
-        } else if (minutes < 10 && hour24 > 10) {
-            "$hour24:0$minutes"
-        } else if (minutes > 10 && hour24 < 10) {
-            "0$hour24:$minutes"
-        } else {
-            "$hour24:$minutes"
-        }
-
-        val month = when (rightNow.get(Calendar.MONTH)) {
-            rightNow.get(Calendar.JANUARY) -> {
-                "Janvier"
-            }
-            rightNow.get(Calendar.FEBRUARY) -> {
-                "Février"
-            }
-            rightNow.get(Calendar.MARCH) -> {
-                "Mars"
-            }
-            rightNow.get(Calendar.APRIL) -> {
-                "Avril"
-            }
-            rightNow.get(Calendar.MAY) -> {
-                "Mai"
-            }
-            rightNow.get(Calendar.JUNE) -> {
-                "Juin"
-            }
-            rightNow.get(Calendar.JULY) -> {
-                "Juillet"
-            }
-            rightNow.get(Calendar.AUGUST) -> {
-                "Aout"
-            }
-            rightNow.get(Calendar.SEPTEMBER) -> {
-                "Septembre"
-            }
-            rightNow.get(Calendar.OCTOBER) -> {
-                "Octobre"
-            }
-            rightNow.get(Calendar.NOVEMBER) -> {
-                "Novembre"
-            }
-            rightNow.get(Calendar.DECEMBER) -> {
-                "Décembre"
-            }
-            else -> {
-                "Avril"
-            }
-        }
-
-        if (date != null) {
-            if (date!!.time.day == rightNow.get(Calendar.DAY_OF_MONTH)) {
-                noteDetailActivityDate!!.text =
-                    "Aujourd'hui à $noteDetailActivityDateField"
-            } else {
-                noteDetailActivityDate!!.text =
-                    "${rightNow.get(Calendar.DAY_OF_MONTH)} $month à $noteDetailActivityDateField"
-            }
-        } else {
-            date = rightNow
-            noteDetailActivityDate!!.text =
-                "Aujourd'hui à $noteDetailActivityDateField"
-        }
-    }
-
     private fun saveNote() {
-        getDateTime()
         if (note != null) {
             if (emptyFields(
                     noteDetailActivityTitle!!.text.toString(),
@@ -309,7 +332,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                 note!!.content = noteDetailActivityContent!!.text.toString()
                 note!!.isFavorite = isFavorite
                 note!!.isDeleted = isDeleted
-                note!!.date = date!!.time.toString()
+                note!!.date = convertDate(date)
                 noteDao.updateNote(note!!)
 
                 afterSavingNote()
@@ -326,11 +349,11 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                     noteDetailActivityTitle!!.text.toString(),
                     noteDetailActivityContent!!.text.toString(),
                     "",
-                    date!!.time.toString(),
+                    convertDate(date),
                     isFavorite, isDeleted
                 )
                 noteDao.insertNote(note!!)
-                afterSavingNote()
+                afterCreateNote()
             }
         }
     }
@@ -341,6 +364,14 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, false)
         closeKeyboard()
         refreshActivity()
+//        noteDetailActivityContent!!.clearFocus()
+    }
+
+    private fun afterCreateNote() {
+        noteDetailBottomNav!!.visibility = View.VISIBLE
+        noteDetailEditionModeBottomNav!!.visibility = View.GONE
+        noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, false)
+        closeKeyboard()
 //        noteDetailActivityContent!!.clearFocus()
     }
 

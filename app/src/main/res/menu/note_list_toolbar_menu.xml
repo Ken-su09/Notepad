@@ -8,6 +8,10 @@
         android:checkableBehavior="single"
         app:srcCompat="@drawable/ic_sort_by">
         <item
+            android:id="@+id/sort_by_date"
+            android:title="Date"
+            app:showAsAction="collapseActionView" />
+        <item
             android:id="@+id/sort_by_title"
             android:checked="true"
             android:title="Title"
@@ -15,10 +19,6 @@
         <item
             android:id="@+id/sort_by_favorite"
             android:title="Favorite"
-            app:showAsAction="collapseActionView"/>
-        <item
-            android:id="@+id/sort_by_date"
-            android:title="Date"
             app:showAsAction="collapseActionView" />
     </group>
 </menu>
