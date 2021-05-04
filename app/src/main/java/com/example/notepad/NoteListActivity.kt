@@ -401,6 +401,12 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun toFavorites() {
+        val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
+        val edit: SharedPreferences.Editor = sharedPreferences.edit()
+        edit.putString("Sort_by", "title")
+        edit.apply()
+        sortByTitle.isChecked = true
+
         adapter = RecyclerViewNoteAdapter(listOfFavoritesNotes, this)
         recyclerViewInit(adapter)
         menuItemListFavorites.setIcon(R.drawable.ic_full_star)

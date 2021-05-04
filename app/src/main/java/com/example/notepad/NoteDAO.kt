@@ -65,7 +65,7 @@ interface NoteDAO {
      * Usage:
      * dao.getAllFavoriteNotesOrderByDateAZ()
      */
-    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0 ORDER BY date ASC")
+    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0 ORDER BY date DESC")
     fun getAllFavoriteNotesOrderByDateAZ(): MutableList<Note>
 
     /**
