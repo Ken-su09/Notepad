@@ -68,7 +68,7 @@
         tools:listitem="@layout/item_note" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/activity_note_list_floating_button"
+        android:id="@+id/activity_note_list_add_new_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/activity_note_list_bottom_nav_view"
@@ -77,6 +77,25 @@
         android:layout_marginBottom="80dp"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_plus"
+        app:backgroundTint="@color/colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/activity_note_list_delete_trash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/activity_note_list_bottom_nav_view"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="80dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_delete"
+        android:visibility="invisible"
         app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:elevation="6dp"

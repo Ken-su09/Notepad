@@ -14,6 +14,11 @@
     <string name="note_list_bottom_nav_view_menu_trash">Corbeille</string>
     <string name="note_list_bottom_nav_view_menu_categories">Catégories</string>
 
+    <!-- Note List Bottom Alert Dialog Delete All Notes in Trash -->
+    <string name="note_list_alert_dialog_delete_all_notes_title">Supprimer toutes les notes</string>
+    <string name="note_list_alert_dialog_delete_all_notes_subtitle">Êtes-vous sûr de vouloir supprimer toutes les notes de facon permanente ?</string>
+    <string name="note_list_alert_dialog_delete_all_notes_positive_button">Confirmer</string>
+    <string name="note_list_alert_dialog_delete_all_notes_negative_button">Annuler</string>
 
     <!-- Note Detail Activity -->
     <string name="activity_note_detail_title_hint">Titre de la note</string>

@@ -1,6 +1,7 @@
 package com.example.notepad
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -42,7 +43,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var searchBarEditText: AppCompatEditText
 
     private var bottomNavigationView: BottomNavigationView? = null
-    private var floatingButton: FloatingActionButton? = null
+    private var floatingButtonAddNewNote: FloatingActionButton? = null
+    private var floatingButtonDeleteTrash: FloatingActionButton? = null
 
     private var sharedPref: SharedPreferences? = null
 
@@ -119,7 +121,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         //region ======================================= FindViewById =======================================
 
         recyclerView = findViewById(R.id.activity_note_list_recyclerview)
-        floatingButton = findViewById(R.id.activity_note_list_floating_button)
+        floatingButtonAddNewNote = findViewById(R.id.activity_note_list_add_new_note)
+        floatingButtonDeleteTrash = findViewById(R.id.activity_note_list_delete_trash)
         bottomNavigationView = findViewById(R.id.activity_note_list_bottom_nav_view)
         searchBarEditText = findViewById(R.id.activity_note_list_search)
 
@@ -171,7 +174,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         //region ========================================= Listeners ========================================
 
         bottomNavigationView!!.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        floatingButton!!.setOnClickListener(this)
+        floatingButtonAddNewNote!!.setOnClickListener(this)
+        floatingButtonDeleteTrash!!.setOnClickListener(this)
 
         searchBarEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -218,7 +222,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         //endregion
     }
 
-    //region =========================================== Listeners ==========================================
+    //region =========================================== Override ===========================================
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.note_list_toolbar_menu, menu)
@@ -313,7 +317,10 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
             }
         } else {
             when (v?.id) {
-                R.id.activity_note_list_floating_button -> createNewNote()
+                R.id.activity_note_list_add_new_note -> createNewNote()
+                R.id.activity_note_list_delete_trash -> {
+                    confirmDeleteAllNotesDialog()
+                }
             }
         }
     }
@@ -321,6 +328,27 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     //endregion
 
     //region =========================================== Functions ==========================================
+
+    private fun confirmDeleteAllNotesDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.note_list_alert_dialog_delete_all_notes_title))
+            .setMessage(getString(R.string.note_list_alert_dialog_delete_all_notes_subtitle))
+            .setPositiveButton(getString(R.string.note_list_alert_dialog_delete_all_notes_positive_button)) { _, _ ->
+
+                noteDao.deleteNotes(listOfDeletedNotes)
+                refreshActivity()
+            }
+            .setNegativeButton(R.string.note_list_alert_dialog_delete_all_notes_negative_button) { dialog, _ ->
+                dialog.cancel()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun refreshActivity() {
+        startActivity(Intent(this, NoteListActivity::class.java))
+        finish()
+    }
 
     private fun showNoteDetail(noteIndex: Int, notes: MutableList<Note>) {
         val note = notes[noteIndex]
@@ -350,6 +378,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromFavorites = true
         fromDeletedNotes = false
         sortByFavorite.isVisible = false
+        floatingButtonAddNewNote!!.visibility = View.VISIBLE
+        floatingButtonDeleteTrash!!.visibility = View.GONE
     }
 
     private fun toAllNotes() {
@@ -361,6 +391,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromFavorites = false
         fromDeletedNotes = false
         sortByFavorite.isVisible = true
+        floatingButtonAddNewNote!!.visibility = View.VISIBLE
+        floatingButtonDeleteTrash!!.visibility = View.GONE
     }
 
     private fun toDeletedNotes() {
@@ -372,6 +404,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         fromFavorites = false
         fromDeletedNotes = true
         sortByFavorite.isVisible = true
+        floatingButtonAddNewNote!!.visibility = View.GONE
+        floatingButtonDeleteTrash!!.visibility = View.VISIBLE
     }
 
 //    fun getNoteByFilterSearchBar(filterList: ArrayList<String>, name: String): ArrayList<Note> {

@@ -35,6 +35,12 @@
     <string name="note_list_toolbar_menu_sort_by_alphabetical">Alphabetical</string>
     <string name="note_list_toolbar_sort_by_favorite">Favorite</string>
 
+    <!-- Note List Bottom Alert Dialog Delete All Notes in Trash -->
+    <string name="note_list_alert_dialog_delete_all_notes_title">Delete all notes</string>
+    <string name="note_list_alert_dialog_delete_all_notes_subtitle">Are you sure you want to delete the note permanently ?</string>
+    <string name="note_list_alert_dialog_delete_all_notes_positive_button">Confirm</string>
+    <string name="note_list_alert_dialog_delete_all_notes_negative_button">Cancel</string>
+
     <!-- Note List Bottom Nav View Menu -->
     <string name="note_list_bottom_nav_view_menu_notes">Notes</string>
     <string name="note_list_bottom_nav_view_menu_favorites">Favorites</string>

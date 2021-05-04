@@ -132,5 +132,5 @@ interface NoteDAO {
      * dao.updateNotes(notes)
      */
     @Delete
-    fun deleteNotes(notes: Note)
+    fun deleteNotes(notes: MutableList<Note>)
 }

@@ -1,6 +1,5 @@
 package com.example.notepad
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
