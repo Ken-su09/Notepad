@@ -128,7 +128,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         //endregion
 
         val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
-        when (sharedPreferences.getString("tri", "date")) {
+        when (sharedPreferences.getString("Sort_by", "date")) {
             "title" -> {
                 if (fromFavorites) {
                     adapter =

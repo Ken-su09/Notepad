@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.text.set
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
@@ -145,12 +146,10 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         noteDetailActivityContent!!.setOnFocusChangeListener { _, _ ->
             changeToEditionMode()
-//            noteDetailActivityTitle!!.clearFocus()
         }
 
         noteDetailActivityTitle!!.setOnFocusChangeListener { _, _ ->
-//            changeToEditionMode()
-//            noteDetailActivityContent!!.clearFocus()
+            changeToEditionMode()
         }
 
 //        noteDetailActivityContent!!.addTextChangedListener(object : TextWatcher {
@@ -324,6 +323,8 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveNote() {
+        noteDetailActivityTitle!!.text!![0].isUpperCase()
+
         if (note != null) {
             if (emptyFields(
                     noteDetailActivityTitle!!.text.toString(),

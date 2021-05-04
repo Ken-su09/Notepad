@@ -37,7 +37,7 @@ interface NoteDAO {
      * Usage:
      * dao.getAllNotesOrderByTitleAZ()
      */
-    @Query("SELECT * FROM note WHERE isDeleted == 0 ORDER BY title ASC")
+    @Query("SELECT * FROM note WHERE isDeleted == 0 ORDER BY title COLLATE NOCASE ASC")
     fun getAllNotesOrderByTitleAZ(): MutableList<Note>
 
     /**
@@ -58,7 +58,7 @@ interface NoteDAO {
      * Usage:
      * dao.getAllFavoriteNotesOrderByTitleAZ()
      */
-    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0 ORDER BY title ASC")
+    @Query("SELECT * FROM note WHERE isFavorite == 1 AND isDeleted == 0 ORDER BY title COLLATE NOCASE ASC")
     fun getAllFavoriteNotesOrderByTitleAZ(): MutableList<Note>
 
     /**
@@ -72,7 +72,7 @@ interface NoteDAO {
      * Usage:
      * dao.getDeletedNotesOrderByTitleAZ()
      */
-    @Query("SELECT * FROM note WHERE isDeleted == 1 ORDER BY title ASC")
+    @Query("SELECT * FROM note WHERE isDeleted == 1 ORDER BY title COLLATE NOCASE ASC")
     fun getDeletedNotesOrderByTitleAZ(): MutableList<Note>
 
     /**
