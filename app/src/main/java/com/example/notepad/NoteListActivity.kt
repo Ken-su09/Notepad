@@ -60,6 +60,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                     editor.apply()
                     editor.commit()
 
+                    searchBarEditText.text!!.clear()
                     toAllNotes()
 
                     return@OnNavigationItemSelectedListener true
@@ -71,6 +72,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                     editor.commit()
                     menuItem.setIcon(R.drawable.ic_full_star)
 
+                    searchBarEditText.text!!.clear()
+
                     toFavorites()
 
                     return@OnNavigationItemSelectedListener true
@@ -80,6 +83,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                     editor.putInt("bottomNavigationView", 2)
                     editor.apply()
                     editor.commit()
+
+                    searchBarEditText.text!!.clear()
 
                     toDeletedNotes()
 
@@ -188,6 +193,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                 before: Int,
                 count: Int
             ) {
+                getNoteByFilterSearchBar(charSequence.toString())
 //                listOfAllNotes = noteDao.getAllNotes()
 //                listOfFavoritesNotes = noteDao.getFavoritesNotes()
 //                listOfDeletedNotes = noteDao.getDeletedNotes()
@@ -262,7 +268,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                             listOfDeletedNotes = noteDao.getDeletedNotesOrderByTitleAZ()
                         }
                         else -> {
-                            adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
+                            adapter =
+                                RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
                             listOfAllNotes = noteDao.getAllNotesOrderByTitleAZ()
                         }
                     }
@@ -446,14 +453,50 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         floatingButtonDeleteTrash!!.visibility = View.VISIBLE
     }
 
-//    fun getNoteByFilterSearchBar(filterList: ArrayList<String>, name: String): ArrayList<Note> {
+    fun getNoteByFilterSearchBar(searchBarText: String) {
+        val noteListFilter = arrayListOf<Note>()
+        when {
+            fromFavorites -> {
+                for (note in noteDao.getAllFavoriteNotesOrderByTitleAZ()) {
+                    if (note.title.contains(searchBarText) || note.content.contains(searchBarText)) {
+                        noteListFilter.add(note)
+                    }
+                }
+                adapter = RecyclerViewNoteAdapter(
+                    noteListFilter,
+                    this
+                )
+                recyclerViewInit(adapter)
+            }
+            fromDeletedNotes -> {
+                for (note in noteDao.getDeletedNotesOrderByFavoriteAZ()) {
+                    if (note.title.contains(searchBarText) || note.content.contains(searchBarText)) {
+                        noteListFilter.add(note)
+                    }
+                }
+                adapter = RecyclerViewNoteAdapter(
+                    noteListFilter,
+                    this
+                )
+            }
+            else -> {
+                for (note in noteDao.getAllNotesOrderByTitleAZ()) {
+                    if (note.title.contains(searchBarText) || note.content.contains(searchBarText)) {
+                        noteListFilter.add(note)
+                    }
+                }
+                adapter =
+                    RecyclerViewNoteAdapter(noteListFilter, this)
+                recyclerViewInit(adapter)
+            }
+        }
+
 //        val contactFilterList: ArrayList<Note>? = getAllContactFilter(filterList)
 //        val contactList = getContactByName(name)
 //        if (contactFilterList != null) {
 //            return intersectContactWithAllInformation(contactList, contactFilterList)
 //        }
-//        return contactList
-//    }
+    }
 
     private fun hideKeyboard() {
         val imm: InputMethodManager =
