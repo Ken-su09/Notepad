@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.text.set
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
@@ -30,7 +29,9 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var noteId = 0
     private var isFavorite = 0
     private var isDeleted = 0
+    private var isRestored = false
     private var date = Calendar.getInstance()
+    private var noteDate = ""
 
     private var fromFavorites = false
 
@@ -63,7 +64,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                     saveConfirmPermanentlyDeleteNoteDialog()
                 }
                 R.id.note_deleted_detail_bottom_nav_view_menu_restore -> {
-                    restoreNote()
+                    restoreNoteAlertDialog()
                 }
             }
             true
@@ -119,6 +120,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             noteDetailActivityTitle!!.setText(note?.title)
             noteDetailActivityContent!!.setText(note?.content)
             noteDetailActivityDate!!.text = note?.date
+            noteDate = note?.date!!
             isFavorite = note!!.isFavorite
 
             if (note!!.isDeleted == 1) {
@@ -341,7 +343,12 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                 note!!.content = noteDetailActivityContent!!.text.toString()
                 note!!.isFavorite = isFavorite
                 note!!.isDeleted = isDeleted
-                note!!.date = convertDate(date)
+
+                if (isDeleted == 1 || isRestored) {
+                    note!!.date = noteDate
+                } else {
+                    note!!.date = convertDate(date)
+                }
                 noteDao.updateNote(note!!)
 
                 afterSavingNote()
@@ -361,6 +368,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                     convertDate(date),
                     isFavorite, isDeleted
                 )
+
                 noteDao.insertNote(note!!)
                 afterCreateNote()
             }
@@ -435,12 +443,21 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             .show()
     }
 
-    private fun restoreNote() {
-        isDeleted = 0
-        saveNote()
-
-        startActivity(Intent(this, NoteListActivity::class.java).putExtra("restoreNote", 0))
-        finish()
+    private fun restoreNoteAlertDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.note_detail_material_builder_restore_note_title))
+            .setMessage(getString(R.string.note_detail_material_builder_restore_note_message))
+            .setPositiveButton(getString(R.string.note_detail_material_builder_restore_note_positive_button)) { _, _ ->
+                isRestored = true
+                saveNote()
+                startActivity(Intent(this, NoteListActivity::class.java).putExtra("restoreNote", 0))
+                finish()
+            }
+            .setNegativeButton(R.string.note_detail_material_builder_restore_note_negative_button) { dialog, _ ->
+                dialog.cancel()
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun shareNote(note: Note) {

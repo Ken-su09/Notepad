@@ -29,6 +29,11 @@
     <string name="note_detail_material_builder_delete_note_positive_button">Supprimer</string>
     <string name="note_detail_material_builder_delete_note_negative_button">Annuler</string>
 
+    <string name="note_detail_material_builder_restore_note_title">Restoration d\'une note</string>
+    <string name="note_detail_material_builder_restore_note_message">Êtes-vous sûr de vouloir restorer cette note ?</string>
+    <string name="note_detail_material_builder_restore_note_positive_button">Oui</string>
+    <string name="note_detail_material_builder_restore_note_negative_button">Non</string>
+
     <!-- Note Detail Toolbar Menu -->
     <string name="note_detail_toolbar_menu_validate">Valider</string>
     <string name="note_detail_toolbar_menu_delete">Supprimer</string>

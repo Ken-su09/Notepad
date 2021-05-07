@@ -10,6 +10,11 @@
     <string name="note_detail_material_builder_delete_note_positive_button">Delete</string>
     <string name="note_detail_material_builder_delete_note_negative_button">Cancel</string>
 
+    <string name="note_detail_material_builder_restore_note_title">Restoring a note</string>
+    <string name="note_detail_material_builder_restore_note_message">Are you sure you want to restore this note?</string>
+    <string name="note_detail_material_builder_restore_note_positive_button">Yes</string>
+    <string name="note_detail_material_builder_restore_note_negative_button">No</string>
+
     <string name="note_detail_material_builder_back_on_pressed_title">Warning !</string>
     <string name="note_detail_material_builder_back_on_pressed_message">You may lose the changes, do you really want to continue?</string>
     <string name="note_detail_material_builder_back_on_pressed_positive_button">Confirm</string>
