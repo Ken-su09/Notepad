@@ -114,10 +114,10 @@ interface NoteDAO {
     /**
      * Usage:
      * notes = mutableListOf(note1, note2, note3.....)
-     * val rows = dao.updateNotes(notes)
+     * dao.updateNotes(note)
      */
     @Update
-    fun updateNotes(notes: MutableList<Note>): Int
+    fun updateNotes(notes: MutableList<Note>)
 
     /**
      * Usage:

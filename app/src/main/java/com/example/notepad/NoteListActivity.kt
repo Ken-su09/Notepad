@@ -15,47 +15,47 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import java.util.*
 
 class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
     //region ========================================== Val or Var ==========================================
 
-    private lateinit var listOfAllNotes: MutableList<Note>
-    private lateinit var listOfFavoritesNotes: MutableList<Note>
-    private lateinit var listOfDeletedNotes: MutableList<Note>
-
     private var fromAllNotes = true
     private var fromFavorites = false
     private var fromDeletedNotes = false
 
+    private lateinit var noteDao: NoteDAO
+
+    private lateinit var sortByDate: MenuItem
     private lateinit var sortByTitle: MenuItem
     private lateinit var sortByFavorite: MenuItem
-    private lateinit var sortByDate: MenuItem
+    private lateinit var sortByNone: MenuItem
+    private lateinit var menuItemListFavorites: MenuItem
 
-    private lateinit var adapter: RecyclerViewNoteAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var adapter: RecyclerViewNoteAdapter
     private lateinit var searchBarEditText: AppCompatEditText
+
+    private lateinit var listOfAllNotes: MutableList<Note>
+    private lateinit var listOfDeletedNotes: MutableList<Note>
+    private lateinit var listOfFavoritesNotes: MutableList<Note>
 
     private var bottomNavigationView: BottomNavigationView? = null
     private var floatingButtonAddNewNote: FloatingActionButton? = null
     private var floatingButtonDeleteTrash: FloatingActionButton? = null
 
-    private var sharedPref: SharedPreferences? = null
-
-    private var noteDao = App.database.noteDao()
-
-    private lateinit var menuItemListFavorites: MenuItem
-
     private val mOnNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.activity_note_list_bottom_nav_view_notes -> {
-                    val editor: SharedPreferences.Editor = sharedPref!!.edit()
+                    val editor: SharedPreferences.Editor = sharedPref.edit()
                     editor.putInt("bottomNavigationView", 0)
                     editor.apply()
                     editor.commit()
@@ -66,7 +66,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.activity_note_list_bottom_nav_view_favorites -> {
-                    val editor: SharedPreferences.Editor = sharedPref!!.edit()
+                    val editor: SharedPreferences.Editor = sharedPref.edit()
                     editor.putInt("bottomNavigationView", 1)
                     editor.apply()
                     editor.commit()
@@ -79,7 +79,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.activity_note_list_bottom_nav_view_trash -> {
-                    val editor: SharedPreferences.Editor = sharedPref!!.edit()
+                    val editor: SharedPreferences.Editor = sharedPref.edit()
                     editor.putInt("bottomNavigationView", 2)
                     editor.apply()
                     editor.commit()
@@ -97,6 +97,54 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
             false
         }
 
+    private val itemTouchHelperCallback = object : ItemTouchHelper.Callback() {
+        override fun getMovementFlags(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
+        ): Int {
+            val dragFlags =
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            return makeMovementFlags(dragFlags, 0)
+        }
+
+        override fun isLongPressDragEnabled(): Boolean {
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+
+            Collections.swap(listOfAllNotes, viewHolder.adapterPosition, target.adapterPosition)
+
+            val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
+            val edit: SharedPreferences.Editor = sharedPreferences.edit()
+            edit.putString("Sort_by", "none")
+            edit.apply()
+            sortByNone.isChecked = true
+
+            return true
+        }
+
+        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+            super.clearView(recyclerView, viewHolder)
+            noteDao.updateNotes(listOfAllNotes)
+        }
+
+        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+            super.onSelectedChanged(viewHolder, actionState)
+//            refreshActivity()
+        }
+    }
+    private val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+
     //endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,16 +153,14 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
         //region ======================================== getNoteDAO ========================================
 
+        noteDao = App.database.noteDao()
         listOfAllNotes = noteDao.getAllNotes()
         listOfFavoritesNotes = noteDao.getFavoritesNotes()
         listOfDeletedNotes = noteDao.getDeletedNotes()
 
         //endregion
 
-        sharedPref = getSharedPreferences("bottomNavigationView", Context.MODE_PRIVATE)
-        val bottomNavPosition = sharedPref!!.getInt("bottomNavigationView", 0)
-
-        //region ======================================== Toolbar ========================================
+        //region ========================================== Toolbar =========================================
 
         val toolbar = findViewById<Toolbar>(R.id.activity_note_list_toolbar)
         setSupportActionBar(toolbar)
@@ -132,12 +178,20 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
         //endregion
 
+        //region ===================================== SharedPreferences ====================================
+
+        sharedPref = getSharedPreferences("bottomNavigationView", Context.MODE_PRIVATE)
+        val bottomNavPosition = sharedPref.getInt("bottomNavigationView", 0)
+
         val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
         when (sharedPreferences.getString("Sort_by", "date")) {
             "title" -> {
                 if (fromFavorites) {
                     adapter =
-                        RecyclerViewNoteAdapter(noteDao.getAllFavoriteNotesOrderByTitleAZ(), this)
+                        RecyclerViewNoteAdapter(
+                            noteDao.getAllFavoriteNotesOrderByTitleAZ(),
+                            this
+                        )
                     listOfFavoritesNotes = noteDao.getAllFavoriteNotesOrderByTitleAZ()
                 } else {
                     adapter = RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByTitleAZ(), this)
@@ -160,9 +214,26 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                     listOfAllNotes = noteDao.getAllNotesOrderByDateAZ()
                 }
             }
-            else -> RecyclerViewNoteAdapter(noteDao.getAllNotesOrderByDateAZ(), this)
+            "none" -> {
+                if (fromFavorites) {
+                    adapter = RecyclerViewNoteAdapter(
+                        noteDao.getFavoritesNotes(),
+                        this
+                    )
+                    listOfFavoritesNotes = noteDao.getFavoritesNotes()
+                } else {
+                    adapter = RecyclerViewNoteAdapter(noteDao.getAllNotes(), this)
+                    listOfAllNotes = noteDao.getAllNotes()
+                }
+            }
+            else -> adapter = RecyclerViewNoteAdapter(noteDao.getAllNotes(), this)
         }
+
         recyclerViewInit(adapter)
+
+        //endregion
+
+        //region =================================== BottomNavigationView ===================================
 
         val fromRestoreNote = intent.getIntExtra("restoreNote", 1)
         if (fromRestoreNote == 0) {
@@ -175,6 +246,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         val navItem = menu.findItem(R.id.activity_note_list_bottom_nav_view_notes)
         navItem.isChecked = true
         menuItemListFavorites = menu.findItem(R.id.activity_note_list_bottom_nav_view_favorites)
+
+        //endregion
 
         //region ========================================= Listeners ========================================
 
@@ -194,28 +267,6 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                 count: Int
             ) {
                 getNoteByFilterSearchBar(charSequence.toString())
-//                listOfAllNotes = noteDao.getAllNotes()
-//                listOfFavoritesNotes = noteDao.getFavoritesNotes()
-//                listOfDeletedNotes = noteDao.getDeletedNotes()
-//
-//                main_search_bar_value = main_SearchBar!!.text.toString()
-//
-//                val filteredList = gestionnaireContacts!!.getContactConcernByFilter(main_filter, main_search_bar_value)
-//                val contactListDb = ContactManager(this@MainActivity)
-//
-////                if (sharedPref.getString("tri", "nom") == "nom") {
-////                    contactListDb.sortContactByFirstNameAZ()
-////                    contactListDb.contactList.retainAll(filteredList)
-////                } else {
-////                    contactListDb.sortContactByPriority()
-////                    contactListDb.contactList.retainAll(filteredList)
-////                }
-//                gestionnaireContacts!!.contactList.clear()
-//                gestionnaireContacts!!.contactList.addAll(contactListDb.contactList)
-//
-//
-//                adapter = RecyclerViewNoteAdapter(listOfAllNotes, this)
-//                recyclerViewInit(adapter)
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -226,6 +277,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         })
 
         //endregion
+
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     //region =========================================== Override ===========================================
@@ -235,12 +288,14 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         sortByTitle = menu!!.findItem(R.id.sort_by_title)
         sortByFavorite = menu.findItem(R.id.sort_by_favorite)
         sortByDate = menu.findItem(R.id.sort_by_date)
+        sortByNone = menu.findItem(R.id.sort_by_none)
 
         val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
         when (sharedPreferences.getString("Sort_by", "date")) {
             "title" -> sortByTitle.isChecked = true
             "favorite" -> sortByFavorite.isChecked = true
             "date" -> sortByDate.isChecked = true
+            "none" -> sortByNone.isChecked = true
             else -> sortByDate.isChecked = true
         }
         return super.onCreateOptionsMenu(menu)
@@ -332,7 +387,34 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                 edit.apply()
                 item.isChecked = true
             }
+            R.id.sort_by_none -> {
+                when {
+                    fromFavorites -> {
+                        adapter = RecyclerViewNoteAdapter(
+                            noteDao.getFavoritesNotes(),
+                            this
+                        )
+                        listOfFavoritesNotes = noteDao.getFavoritesNotes()
+                    }
+                    fromDeletedNotes -> {
+                        adapter = RecyclerViewNoteAdapter(
+                            noteDao.getDeletedNotes(),
+                            this
+                        )
+                        listOfDeletedNotes = noteDao.getDeletedNotes()
+                    }
+                    else -> {
+                        adapter = RecyclerViewNoteAdapter(noteDao.getAllNotes(), this)
+                        listOfAllNotes = noteDao.getAllNotes()
+                    }
+                }
+                recyclerViewInit(adapter)
+                edit.putString("Sort_by", "none")
+                edit.apply()
+                item.isChecked = true
+            }
         }
+
         hideKeyboard()
         return super.onOptionsItemSelected(item)
     }
@@ -409,11 +491,13 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun toFavorites() {
-        val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
-        val edit: SharedPreferences.Editor = sharedPreferences.edit()
-        edit.putString("Sort_by", "title")
-        edit.apply()
-        sortByTitle.isChecked = true
+        if (sortByFavorite.isChecked) {
+            val sharedPreferences = getSharedPreferences("Sort_by", Context.MODE_PRIVATE)
+            val edit: SharedPreferences.Editor = sharedPreferences.edit()
+            edit.putString("Sort_by", "title")
+            edit.apply()
+            sortByTitle.isChecked = true
+        }
 
         adapter = RecyclerViewNoteAdapter(listOfFavoritesNotes, this)
         recyclerViewInit(adapter)

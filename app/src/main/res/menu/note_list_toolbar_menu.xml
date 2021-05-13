@@ -9,16 +9,20 @@
         app:srcCompat="@drawable/ic_sort_by">
         <item
             android:id="@+id/sort_by_date"
-            android:title="Date"
+            android:title="@string/note_list_toolbar_menu_sort_by_date"
             app:showAsAction="collapseActionView" />
         <item
             android:id="@+id/sort_by_title"
             android:checked="true"
-            android:title="Title"
+            android:title="@string/note_list_toolbar_menu_sort_by_alphabetical"
             app:showAsAction="collapseActionView" />
         <item
             android:id="@+id/sort_by_favorite"
-            android:title="Favorite"
+            android:title="@string/note_list_toolbar_menu_sort_by_favorite"
+            app:showAsAction="collapseActionView" />
+        <item
+            android:id="@+id/sort_by_none"
+            android:title="@string/note_list_toolbar_menu_sort_by_none"
             app:showAsAction="collapseActionView" />
     </group>
 </menu>

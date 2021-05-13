@@ -38,7 +38,8 @@
     <string name="note_list_toolbar_menu_sort_by">Sort by :</string>
     <string name="note_list_toolbar_menu_sort_by_date">Date</string>
     <string name="note_list_toolbar_menu_sort_by_alphabetical">Alphabetical</string>
-    <string name="note_list_toolbar_sort_by_favorite">Favorite</string>
+    <string name="note_list_toolbar_menu_sort_by_favorite">Favorite</string>
+    <string name="note_list_toolbar_menu_sort_by_none">Without sorting</string>
 
     <!-- Note List Bottom Alert Dialog Delete All Notes in Trash -->
     <string name="note_list_alert_dialog_delete_all_notes_title">Delete all notes</string>

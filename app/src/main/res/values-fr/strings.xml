@@ -5,8 +5,9 @@
     <string name="note_list_toolbar_menu_search">Rechercher</string>
     <string name="note_list_toolbar_menu_sort_by">Trier par</string>
     <string name="note_list_toolbar_menu_sort_by_date">Date</string>
-    <string name="note_list_toolbar_menu_sort_by_alphabetical">Ordre alphabétique</string>
-    <string name="note_list_toolbar_sort_by_favorite">Favoris</string>
+    <string name="note_list_toolbar_menu_sort_by_alphabetical">Alphabétique</string>
+    <string name="note_list_toolbar_menu_sort_by_favorite">Favoris</string>
+    <string name="note_list_toolbar_menu_sort_by_none">Sans tri</string>
 
     <!-- Note List Bottom Nav View Menu -->
     <string name="note_list_bottom_nav_view_menu_notes">Notes</string>

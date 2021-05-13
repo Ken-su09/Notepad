@@ -33,6 +33,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var date = Calendar.getInstance()
     private var noteDate = ""
 
+    private var createNote = false
     private var fromFavorites = false
 
     private var noteDetailActivityTitle: AppCompatEditText? = null
@@ -203,6 +204,31 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+            R.id.note_detail_bottom_nav_share -> {
+                shareNote(note!!)
+            }
+            R.id.note_detail_bottom_nav_favorite -> {
+                isFavorite = if (isFavorite == 1) {
+                    noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_star)
+                    noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#000000"))
+                    0
+                } else {
+                    noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_full_star)
+                    noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#037dff"))
+                    1
+                }
+                saveNote()
+            }
+            R.id.note_detail_bottom_nav_trash -> {
+                saveConfirmDeleteNoteDialog()
+            }
+            R.id.note_detail_bottom_nav_print -> {
+            }
+        }
     }
 
     //endregion
@@ -380,20 +406,23 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         noteDetailEditionModeBottomNav!!.visibility = View.GONE
         noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, false)
         closeKeyboard()
-        refreshActivity()
-//        noteDetailActivityContent!!.clearFocus()
+
+        if(!createNote){
+            refreshActivity()
+        }
     }
 
     private fun afterCreateNote() {
+        createNote = true
         noteDetailBottomNav!!.visibility = View.VISIBLE
         noteDetailEditionModeBottomNav!!.visibility = View.GONE
         noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, false)
         closeKeyboard()
-//        noteDetailActivityContent!!.clearFocus()
     }
 
     private fun refreshActivity() {
         startActivity(Intent(this, NoteDetailActivity::class.java).putExtra(EXTRA_NOTE_ID, noteId))
+        finish()
     }
 
     private fun intentToNoteListActivity() {
@@ -474,31 +503,5 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(noteDetailActivityContent!!.windowToken, 0)
     }
-
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            R.id.note_detail_bottom_nav_share -> {
-                shareNote(note!!)
-            }
-            R.id.note_detail_bottom_nav_favorite -> {
-                isFavorite = if (isFavorite == 1) {
-                    noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_star)
-                    noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#000000"))
-                    0
-                } else {
-                    noteDetailBottomNavItemFavImage.setBackgroundResource(R.drawable.ic_full_star)
-                    noteDetailBottomNavItemFavText.setTextColor(Color.parseColor("#037dff"))
-                    1
-                }
-                saveNote()
-            }
-            R.id.note_detail_bottom_nav_trash -> {
-                saveConfirmDeleteNoteDialog()
-            }
-            R.id.note_detail_bottom_nav_print -> {
-            }
-        }
-    }
-
     //endregion
 }
