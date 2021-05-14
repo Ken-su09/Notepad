@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
@@ -36,6 +37,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var createNote = false
     private var fromFavorites = false
 
+    private var noteDetailActivityLayout: ConstraintLayout? = null
     private var noteDetailActivityTitle: AppCompatEditText? = null
     private var noteDetailActivityContent: AppCompatEditText? = null
     private var noteDetailActivityDate: TextView? = null
@@ -86,12 +88,17 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         //endregion
 
-        noteId = intent.getIntExtra(EXTRA_NOTE_ID, -1)
+        //region ========================================== Intent ==========================================
+
         fromFavorites = intent.getBooleanExtra("fromFavorites", false)
+        noteId = intent.getIntExtra(EXTRA_NOTE_ID, -1)
         note = noteDao.getNoteById(noteId)
+
+        //endregion
 
         //region ======================================= FindViewById =======================================
 
+        noteDetailActivityLayout = findViewById(R.id.activity_note_detail_layout)
         noteDetailActivityTitle = findViewById(R.id.activity_note_detail_title)
         noteDetailActivityContent = findViewById(R.id.activity_note_detail_content)
         noteDetailActivityDate = findViewById(R.id.activity_note_detail_date)
@@ -109,10 +116,6 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         noteDetailDeletedBottomNav = findViewById(R.id.note_deleted_detail_bottom_nav)
 
         //endregion
-
-        noteDetailDeletedBottomNav!!.setOnNavigationItemSelectedListener(
-            mOnNavigationItemSelectedListenerNoteDetailDeleted
-        )
 
         noteDetailEditionModeBottomNav!!.menu.setGroupCheckable(0, false, false)
         noteDetailDeletedBottomNav!!.menu.setGroupCheckable(0, false, true)
@@ -152,6 +155,10 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         //region ========================================= Listeners ========================================
+
+        noteDetailDeletedBottomNav!!.setOnNavigationItemSelectedListener(
+            mOnNavigationItemSelectedListenerNoteDetailDeleted
+        )
 
         noteDetailActivityContent!!.setOnFocusChangeListener { _, _ ->
             changeToEditionMode()
@@ -201,6 +208,19 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.note_detail_toolbar_menu_validate -> {
                 saveNote()
+            }
+            else -> {
+                if(createNote){
+                    note = Note(
+                        noteDetailActivityTitle!!.text.toString(),
+                        noteDetailActivityContent!!.text.toString(),
+                        "",
+                        convertDate(date),
+                        isFavorite, isDeleted
+                    )
+
+                    noteDao.insertNote(note!!)
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -387,15 +407,6 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             ) {
                 Toast.makeText(this, R.string.note_detail_is_empty, Toast.LENGTH_SHORT).show()
             } else {
-                note = Note(
-                    noteDetailActivityTitle!!.text.toString(),
-                    noteDetailActivityContent!!.text.toString(),
-                    "",
-                    convertDate(date),
-                    isFavorite, isDeleted
-                )
-
-                noteDao.insertNote(note!!)
                 afterCreateNote()
             }
         }
@@ -407,13 +418,14 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, false)
         closeKeyboard()
 
-        if(!createNote){
+        if (!createNote) {
             refreshActivity()
         }
     }
 
     private fun afterCreateNote() {
         createNote = true
+
         noteDetailBottomNav!!.visibility = View.VISIBLE
         noteDetailEditionModeBottomNav!!.visibility = View.GONE
         noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, false)
