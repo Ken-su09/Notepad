@@ -145,14 +145,17 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         initFavoriteImageAndText()
 
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.categories_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            noteDetailActivitySpinner!!.adapter = adapter
-        }
+        val customDropDownAdapter = CustomSpinnerAdapter(this, resources.getStringArray(R.array.categories_array))
+        noteDetailActivitySpinner!!.adapter = customDropDownAdapter
+
+//        ArrayAdapter.createFromResource(
+//            this,
+//            R.array.categories_array,
+//            android.R.layout.simple_spinner_item
+//        ).also { adapter ->
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//            noteDetailActivitySpinner!!.adapter = adapter
+//        }
 
         //region ========================================= Listeners ========================================
 

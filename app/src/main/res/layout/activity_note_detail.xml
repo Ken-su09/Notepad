@@ -34,24 +34,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_toolbar" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/activity_note_detail_spinner_image"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_below="@+id/activity_note_detail_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_title"
-        app:srcCompat="@drawable/ic_bookmark"
-        tools:ignore="VectorDrawableCompat" />
-
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/activity_note_detail_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/activity_note_detail_title"
-        android:layout_toEndOf="@+id/activity_note_detail_spinner_image"
-        android:layout_toRightOf="@+id/activity_note_detail_spinner_image"
-        app:layout_constraintStart_toEndOf="@+id/activity_note_detail_spinner_image"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_title" />
 
     <TextView
