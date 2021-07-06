@@ -91,6 +91,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.activity_note_list_bottom_nav_view_categories -> {
+                    startActivity(Intent(this@NoteListActivity, CategoriesActivity::class.java))
                     return@OnNavigationItemSelectedListener true
                 }
             }
@@ -278,7 +279,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
         //endregion
 
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+//        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     //region =========================================== Override ===========================================

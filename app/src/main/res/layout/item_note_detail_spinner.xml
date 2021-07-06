@@ -9,6 +9,7 @@
         android:id="@+id/item_note_spinner_image"
         android:layout_width="25dp"
         android:layout_height="25dp"
+        android:layout_margin="10dp"
         app:srcCompat="@drawable/ic_bookmark"
         tools:ignore="VectorDrawableCompat" />
 
@@ -17,9 +18,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_margin="10dp"
         android:layout_toEndOf="@+id/item_note_spinner_image"
         android:layout_toRightOf="@+id/item_note_spinner_image"
         android:text="Sans catégorie"
-         />
+        android:textSize="16sp"/>
 
 </RelativeLayout>

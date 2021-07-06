@@ -39,10 +39,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/activity_note_detail_title"
+        android:background="@color/grey"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/activity_note_detail_content"
         app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_title" />
 
     <TextView
@@ -55,6 +58,7 @@
         android:layout_margin="10dp"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/activity_note_detail_content"
         app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_title"
         tools:text="09:59 10/02/2021" />
 
