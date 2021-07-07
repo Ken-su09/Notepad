@@ -1,4 +1,4 @@
-package com.example.notepad
+package com.example.notepad.controller.activities
 
 import android.app.AlertDialog
 import android.content.Context
@@ -18,6 +18,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.notepad.*
+import com.example.notepad.controller.adapters.RecyclerViewNoteAdapter
+import com.example.notepad.model.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
@@ -31,6 +34,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     private var fromDeletedNotes = false
 
     private lateinit var noteDao: NoteDAO
+    private lateinit var categoryDAO: CategoryDAO
 
     private lateinit var sortByDate: MenuItem
     private lateinit var sortByTitle: MenuItem
@@ -43,6 +47,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var adapter: RecyclerViewNoteAdapter
     private lateinit var searchBarEditText: AppCompatEditText
 
+    private lateinit var listOfAllCategories: MutableList<Category>
     private lateinit var listOfAllNotes: MutableList<Note>
     private lateinit var listOfDeletedNotes: MutableList<Note>
     private lateinit var listOfFavoritesNotes: MutableList<Note>
@@ -280,6 +285,28 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         //endregion
 
 //        itemTouchHelper.attachToRecyclerView(recyclerView)
+
+        //region =========================================== Fill Category Default ===========================================
+
+        val sharedPrefFillCategory = getSharedPreferences("FillCategory", Context.MODE_PRIVATE)
+
+        if (sharedPrefFillCategory.getBoolean("FillCategory", true)) {
+            categoryDAO = App.database.categoryDao()
+            listOfAllCategories = categoryDAO.getAllCategories()
+
+            val arrayOfCategory = resources.getStringArray(R.array.categories_array)
+
+            for (i in arrayOfCategory.indices) {
+                val category = Category(arrayOfCategory[i], defaultColorCategory(i).toString(), 0)
+                categoryDAO.insertCategory(category)
+            }
+
+            val editFillCategory: SharedPreferences.Editor = sharedPrefFillCategory.edit()
+            editFillCategory.putBoolean("FillCategory", false)
+            editFillCategory.apply()
+        }
+
+        //endregion
     }
 
     //region =========================================== Override ===========================================
@@ -450,6 +477,41 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     //endregion
 
     //region =========================================== Functions ==========================================
+
+    private fun defaultColorCategory(i: Int): Int {
+        return when (i) {
+            0 -> {
+                R.drawable.ic_bookmark_dark_blue
+            }
+            1 -> {
+                R.drawable.ic_bookmark_dark_green
+            }
+            2 -> {
+                R.drawable.ic_bookmark_orange
+            }
+            3 -> {
+                R.drawable.ic_bookmark_purple
+            }
+            4 -> {
+                R.drawable.ic_bookmark
+            }
+            5 -> {
+                R.drawable.ic_bookmark_red
+            }
+            6 -> {
+                R.drawable.ic_bookmark_pink
+            }
+            7 -> {
+                R.drawable.ic_bookmark_green
+            }
+            8 -> {
+                R.drawable.ic_bookmark_blue
+            }
+            else -> {
+                R.drawable.ic_bookmark_red
+            }
+        }
+    }
 
     private fun confirmDeleteAllNotesDialog() {
         AlertDialog.Builder(this)

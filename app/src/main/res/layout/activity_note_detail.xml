@@ -5,7 +5,7 @@
     android:id="@+id/activity_note_detail_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NoteDetailActivity">
+    tools:context=".controller.activities.NoteDetailActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/activity_note_detail_toolbar"
@@ -25,6 +25,8 @@
         android:layout_below="@+id/activity_note_detail_toolbar"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
         android:ellipsize="end"
         android:hint="@string/activity_note_detail_title_hint"
         android:inputType="text"
@@ -34,39 +36,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_toolbar" />
 
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/activity_note_detail_spinner"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/activity_note_detail_spinner_date_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/activity_note_detail_title"
-        android:background="@color/grey"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/activity_note_detail_content"
-        app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_title" />
-
-    <TextView
-        android:id="@+id/activity_note_detail_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/activity_note_detail_title"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
-        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/activity_note_detail_content"
-        app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_title"
-        tools:text="09:59 10/02/2021" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_title">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/activity_note_detail_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:entries="@array/categories_array"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/activity_note_detail_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_margin="10dp"
+            android:textSize="12sp"
+            tools:text="09:59 10/02/2021" />
+
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/activity_note_detail_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@+id/activity_note_detail_spinner"
         android:layout_margin="5dp"
         android:background="@color/white"
         android:gravity="top"
@@ -76,7 +78,7 @@
         app:layout_constraintBottom_toTopOf="@+id/note_detail_bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_date" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_spinner_date_layout" />
 
     <LinearLayout
         android:id="@+id/note_detail_bottom_nav"

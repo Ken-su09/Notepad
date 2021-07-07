@@ -65,12 +65,17 @@
     <string name="note_detail_bottom_nav_view_menu_edition_mode_gallery">Galerie</string>
     <string name="note_detail_bottom_nav_view_menu_edition_mode_handwrite">Écriture manuscrite</string>
 
+    <string name="custom_spinner_add_category_text">Ajouter une catégorie</string>
+
     <string-array name="categories_array">
+        <item>Pas de catégorie</item>
         <item>Voyage</item>
         <item>Personnel</item>
         <item>Vie</item>
         <item>Travail</item>
-        <item>Autres</item>
+        <item>Course</item>
+        <item>Loisirs</item>
+        <item>NOUVEAU</item>
     </string-array>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.notepad
+package com.example.notepad.controller.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import com.example.notepad.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 

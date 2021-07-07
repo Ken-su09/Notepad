@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eeeeee"
-    tools:context=".CategoriesActivity">
+    tools:context=".controller.activities.CategoriesActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/activity_note_categories_toolbar"

@@ -66,12 +66,17 @@
     <string name="note_detail_bottom_nav_view_menu_edition_mode_gallery">Gallery</string>
     <string name="note_detail_bottom_nav_view_menu_edition_mode_handwrite">Handwrite</string>
 
+    <string name="custom_spinner_add_category_text">Add category</string>
+
     <string-array name="categories_array">
+        <item>No category</item>
         <item>Travel</item>
         <item>Personal</item>
         <item>Life</item>
         <item>Work</item>
-        <item>Other</item>
+        <item>Shopping</item>
+        <item>Hobbies</item>
+        <item>NEW</item>
     </string-array>
 
 </resources>

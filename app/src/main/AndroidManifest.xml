@@ -3,27 +3,27 @@
     package="com.example.notepad">
 
     <application
-        android:name=".App"
+        android:name=".model.App"
         android:allowBackup="false"
         android:icon="@drawable/ic_app_logo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Notepad">
-        <activity android:name=".CategoriesActivity"></activity>
-        <activity android:name=".SplashScreenActivity">
+        <activity android:name=".controller.activities.CategoriesActivity"></activity>
+        <activity android:name=".controller.activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NoteDetailActivity">
+        <activity android:name=".controller.activities.NoteDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".NoteListActivity" />
+                android:value=".controller.activities.NoteListActivity" />
         </activity>
-        <activity android:name=".NoteListActivity" />
+        <activity android:name=".controller.activities.NoteListActivity" />
     </application>
 
 </manifest>

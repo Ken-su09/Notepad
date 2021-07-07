@@ -1,10 +1,11 @@
-package com.example.notepad
+package com.example.notepad.controller.activities
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.example.notepad.R
 
 class SplashScreenActivity : AppCompatActivity() {
 

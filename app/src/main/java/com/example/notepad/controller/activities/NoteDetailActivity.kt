@@ -1,4 +1,4 @@
-package com.example.notepad
+package com.example.notepad.controller.activities
 
 import android.app.AlertDialog
 import android.content.Context
@@ -15,6 +15,11 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.notepad.R
+import com.example.notepad.controller.adapters.CustomSpinnerAdapter
+import com.example.notepad.model.App
+import com.example.notepad.model.Category
+import com.example.notepad.model.Note
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
@@ -144,18 +149,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         initFavoriteImageAndText()
-
-        val customDropDownAdapter = CustomSpinnerAdapter(this, resources.getStringArray(R.array.categories_array))
-        noteDetailActivitySpinner!!.adapter = customDropDownAdapter
-
-//        ArrayAdapter.createFromResource(
-//            this,
-//            R.array.categories_array,
-//            android.R.layout.simple_spinner_item
-//        ).also { adapter ->
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            noteDetailActivitySpinner!!.adapter = adapter
-//        }
+        customSpinnerInit()
 
         //region ========================================= Listeners ========================================
 
@@ -190,6 +184,23 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         noteDetailBottomNavItemTrash.setOnClickListener(this)
         noteDetailBottomNavItemPrint.setOnClickListener(this)
 
+        noteDetailActivitySpinner!!.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val item = parent!!.getItemAtPosition(position)
+
+                }
+
+            }
+
         //endregion
     }
 
@@ -213,7 +224,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                 saveNote()
             }
             else -> {
-                if(createNote){
+                if (createNote) {
                     note = Note(
                         noteDetailActivityTitle!!.text.toString(),
                         noteDetailActivityContent!!.text.toString(),
@@ -257,6 +268,54 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     //endregion
 
     //region =========================================== Functions ==========================================
+
+    private fun customSpinnerInit() {
+        val arrayOfCategory = resources.getStringArray(R.array.categories_array)
+        val listOfAllCategories = arrayListOf<Category>()
+
+        for (i in arrayOfCategory.indices) {
+            val category = Category(arrayOfCategory[i], defaultColorCategory(i).toString())
+            listOfAllCategories.add(category)
+        }
+//        val categoryDAO = App.database.categoryDao()
+        val customDropDownAdapter = CustomSpinnerAdapter(this, listOfAllCategories)
+        noteDetailActivitySpinner!!.adapter = customDropDownAdapter
+    }
+
+    private fun defaultColorCategory(i: Int): Int {
+        return when (i) {
+            0 -> {
+                R.drawable.ic_bookmark
+            }
+            1 -> {
+                R.drawable.ic_bookmark_dark_green
+            }
+            2 -> {
+                R.drawable.ic_bookmark_orange
+            }
+            3 -> {
+                R.drawable.ic_bookmark_purple
+            }
+            4 -> {
+                R.drawable.ic_bookmark_dark_blue
+            }
+            5 -> {
+                R.drawable.ic_bookmark_red
+            }
+            6 -> {
+                R.drawable.ic_bookmark_pink
+            }
+            7 -> {
+                R.drawable.ic_bookmark_green
+            }
+            8 -> {
+                R.drawable.ic_bookmark_blue
+            }
+            else -> {
+                R.drawable.ic_bookmark_red
+            }
+        }
+    }
 
     private fun convertDate(date: Calendar): String {
         val rightNow = Calendar.getInstance()
