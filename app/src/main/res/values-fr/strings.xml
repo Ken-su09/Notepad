@@ -66,6 +66,9 @@
     <string name="note_detail_bottom_nav_view_menu_edition_mode_handwrite">Écriture manuscrite</string>
 
     <string name="custom_spinner_add_category_text">Ajouter une catégorie</string>
+    <string name="note_list_activity_list_empty">La liste est vide</string>
+
+    <string name="note_detail_content_text">Nombre de charactères : %1d</string>
 
     <string-array name="categories_array">
         <item>Pas de catégorie</item>

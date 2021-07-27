@@ -1,10 +1,15 @@
 package com.example.notepad.controller.activities
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,6 +26,7 @@ import com.example.notepad.model.App
 import com.example.notepad.model.Category
 import com.example.notepad.model.Note
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
 class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
@@ -46,10 +52,13 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var noteDetailActivityTitle: AppCompatEditText? = null
     private var noteDetailActivityContent: AppCompatEditText? = null
     private var noteDetailActivityDate: TextView? = null
+    private var noteDetailActivityNumberChar: TextView? = null
     private var noteDetailActivitySpinner: Spinner? = null
 
     private var noteDao = App.database.noteDao()
     private var listOfNotes: MutableList<Note> = noteDao.getAllNotes()
+
+    private var numberOfChars = 0
 
     private var noteDetailToolbar: Toolbar? = null
     private var noteDetailToolbarMenu: Menu? = null
@@ -63,7 +72,6 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var noteDetailBottomNavItemFavText: TextView
     private lateinit var noteDetailBottomNavItemTrash: RelativeLayout
     private lateinit var noteDetailBottomNavItemPrint: RelativeLayout
-
 
     private val mOnNavigationItemSelectedListenerNoteDetailDeleted =
         BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
@@ -107,6 +115,7 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         noteDetailActivityTitle = findViewById(R.id.activity_note_detail_title)
         noteDetailActivityContent = findViewById(R.id.activity_note_detail_content)
         noteDetailActivityDate = findViewById(R.id.activity_note_detail_date)
+        noteDetailActivityNumberChar = findViewById(R.id.activity_note_detail_number_char)
         noteDetailActivitySpinner = findViewById(R.id.activity_note_detail_spinner)
 
         noteDetailBottomNavItemShare = findViewById(R.id.note_detail_bottom_nav_share)
@@ -151,6 +160,11 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
         initFavoriteImageAndText()
         customSpinnerInit()
 
+        numberOfChars = noteDetailActivityContent!!.text!!.count()
+
+        noteDetailActivityNumberChar!!.text =
+            getString(R.string.note_detail_content_text, numberOfChars)
+
         //region ========================================= Listeners ========================================
 
         noteDetailDeletedBottomNav!!.setOnNavigationItemSelectedListener(
@@ -165,19 +179,22 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
             changeToEditionMode()
         }
 
-//        noteDetailActivityContent!!.addTextChangedListener(object : TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                changeToEditionMode()
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//                changeToEditionMode()
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                changeToEditionMode()
-//            }
-//        })
+        noteDetailActivityContent!!.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                numberOfChars = noteDetailActivityContent!!.text!!.count()
+                noteDetailActivityNumberChar!!.text =
+                    getString(R.string.note_detail_content_text, numberOfChars)
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                numberOfChars = noteDetailActivityContent!!.text!!.count()
+                noteDetailActivityNumberChar!!.text =
+                    getString(R.string.note_detail_content_text, numberOfChars)
+            }
+        })
 
         noteDetailBottomNavItemShare.setOnClickListener(this)
         noteDetailBottomNavItemFav.setOnClickListener(this)
@@ -195,8 +212,12 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
                     position: Int,
                     id: Long
                 ) {
-                    val item = parent!!.getItemAtPosition(position)
-
+                    val item = noteDetailActivitySpinner!!.getItemAtPosition(position) as Category
+                    if (item.title == "NOUVEAU" || item.title == "NEW") {
+                        alertDialogNewCategory()
+//                        Toast.makeText(this@NoteDetailActivity, "Bon zbitek", Toast.LENGTH_LONG)
+//                            .show()
+                    }
                 }
 
             }
@@ -268,6 +289,20 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     //endregion
 
     //region =========================================== Functions ==========================================
+
+    private fun alertDialogNewCategory() {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val alertView = inflater.inflate(R.layout.alert_dialog_add_new_category_layout, null, true)
+        val edit_group_name_EditText: AppCompatEditText =
+            alertView.findViewById(R.id.manager_group_edit_group_view_edit)
+
+        MaterialAlertDialogBuilder(this, R.style.AlertDialog)
+            .setView(alertView)
+            .setPositiveButton("Valider") { dialog: DialogInterface?, which: Int ->
+            }
+            .setNegativeButton("Annuler") { dialog: DialogInterface?, which: Int -> }
+            .show()
+    }
 
     private fun customSpinnerInit() {
         val arrayOfCategory = resources.getStringArray(R.array.categories_array)
@@ -430,8 +465,8 @@ class NoteDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun changeToEditionMode() {
-        noteDetailBottomNav!!.visibility = View.GONE
-        noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
+//        noteDetailBottomNav!!.visibility = View.GONE
+//        noteDetailEditionModeBottomNav!!.visibility = View.VISIBLE
 
         if (noteDetailToolbarMenu != null) {
             noteDetailToolbarMenu!!.setGroupVisible(R.id.note_detail_toolbar_menu_group, true)

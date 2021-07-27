@@ -67,6 +67,9 @@
     <string name="note_detail_bottom_nav_view_menu_edition_mode_handwrite">Handwrite</string>
 
     <string name="custom_spinner_add_category_text">Add category</string>
+    <string name="note_list_activity_list_empty">The list is empty</string>
+
+    <string name="note_detail_content_text">Number of chars : %1d</string>
 
     <string-array name="categories_array">
         <item>No category</item>

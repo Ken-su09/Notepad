@@ -11,8 +11,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -45,6 +47,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var sharedPref: SharedPreferences
     private lateinit var adapter: RecyclerViewNoteAdapter
+
     private lateinit var searchBarEditText: AppCompatEditText
 
     private lateinit var listOfAllCategories: MutableList<Category>
@@ -465,7 +468,11 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
                 R.id.activity_note_list_add_new_note -> createNewNote()
                 R.id.activity_note_list_delete_trash -> {
                     if (listOfDeletedNotes.isEmpty()) {
-                        Toast.makeText(this, "The list is empty", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            getString(R.string.note_list_activity_list_empty),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         confirmDeleteAllNotesDialog()
                     }

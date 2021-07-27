@@ -36,11 +36,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_note_detail_toolbar" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/activity_note_detail_spinner_date_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/activity_note_detail_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,20 +49,29 @@
             android:id="@+id/activity_note_detail_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_margin="5dp"
             android:entries="@array/categories_array"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/activity_note_detail_number_char"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_margin="5dp" />
 
         <TextView
             android:id="@+id/activity_note_detail_date"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_margin="10dp"
             android:textSize="12sp"
             tools:text="09:59 10/02/2021" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/activity_note_detail_content"
@@ -191,7 +199,8 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+            android:foreground="?android:attr/selectableItemBackground"
+            android:visibility="gone">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="25dp"
