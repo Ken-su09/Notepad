@@ -26,6 +26,7 @@ import com.example.notepad.model.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
+import kotlin.collections.ArrayList
 
 class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -607,40 +608,35 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         floatingButtonDeleteTrash!!.visibility = View.VISIBLE
     }
 
-    fun getNoteByFilterSearchBar(searchBarText: String) {
-        val noteListFilter = arrayListOf<Note>()
+    private fun getNoteByFilterSearchBar(searchBarText: String) {
         when {
             fromFavorites -> {
-                for (note in noteDao.getAllFavoriteNotesOrderByTitleAZ()) {
-                    if (note.title.contains(searchBarText) || note.content.contains(searchBarText)) {
-                        noteListFilter.add(note)
-                    }
-                }
-                adapter = RecyclerViewNoteAdapter(
-                    noteListFilter,
-                    this
-                )
+                adapter =
+                    RecyclerViewNoteAdapter(
+                        checkToolbarText(
+                            noteDao.getAllFavoriteNotesOrderByTitleAZ(),
+                            searchBarText
+                        ), this
+                    )
                 recyclerViewInit(adapter)
             }
             fromDeletedNotes -> {
-                for (note in noteDao.getDeletedNotesOrderByFavoriteAZ()) {
-                    if (note.title.contains(searchBarText) || note.content.contains(searchBarText)) {
-                        noteListFilter.add(note)
-                    }
-                }
-                adapter = RecyclerViewNoteAdapter(
-                    noteListFilter,
-                    this
-                )
+                adapter =
+                    RecyclerViewNoteAdapter(
+                        checkToolbarText(
+                            noteDao.getDeletedNotesOrderByFavoriteAZ(),
+                            searchBarText
+                        ), this
+                    )
             }
             else -> {
-                for (note in noteDao.getAllNotesOrderByTitleAZ()) {
-                    if (note.title.contains(searchBarText) || note.content.contains(searchBarText)) {
-                        noteListFilter.add(note)
-                    }
-                }
                 adapter =
-                    RecyclerViewNoteAdapter(noteListFilter, this)
+                    RecyclerViewNoteAdapter(
+                        checkToolbarText(
+                            noteDao.getAllNotesOrderByTitleAZ(),
+                            searchBarText
+                        ), this
+                    )
                 recyclerViewInit(adapter)
             }
         }
@@ -650,6 +646,29 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 //        if (contactFilterList != null) {
 //            return intersectContactWithAllInformation(contactList, contactFilterList)
 //        }
+    }
+
+    private fun checkToolbarText(
+        listOfNotes: MutableList<Note>,
+        searchBarText: String
+    ): ArrayList<Note> {
+        val noteListFilter = arrayListOf<Note>()
+
+        val lowerSearchBarText = searchBarText.toLowerCase(Locale.ROOT)
+        val upperSearchBarText = searchBarText.toUpperCase(Locale.ROOT)
+
+        for (note in listOfNotes) {
+            if (note.title.contains(searchBarText) || note.content.contains(searchBarText) ||
+                note.title.contains(lowerSearchBarText) ||
+                note.content.contains(lowerSearchBarText) ||
+                note.title.contains(upperSearchBarText) ||
+                note.content.contains(upperSearchBarText)
+            ) {
+                noteListFilter.add(note)
+            }
+        }
+
+        return noteListFilter
     }
 
     private fun hideKeyboard() {
